@@ -1,1 +1,4 @@
-I hate github I hate git I'm so confused
+This is for the Waterloo Toboggan Team
+I have no idea how to use github or code in html/css
+
+- Skye
