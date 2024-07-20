@@ -1,0 +1,58 @@
+.header{
+    height: 6vh;
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    border-style: solid;
+    border-top: 1px;
+    border-color: rgb(192, 192, 192);
+  }
+  
+  .site-logo {
+    position: fixed;
+    width: 8vh;
+    top: 0;
+    left: 10vh;
+  }
+  
+  .middle-section {
+    align-items: center;
+    display: flex;
+    flex: 1;
+    justify-content: space-evenly;
+    background-color: white;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .home-button, .about-button {
+    font-size: 3vh;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    background-color: white;
+    border-style: none;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    margin: 2vw;
+  }
+  
+  .home-button:hover, .about-button:hover {
+    opacity: 0.7;
+  }
+  
+  .home-button:active, .about-button:active {
+    opacity: 0.4;
+  }
+
+  @media screen and (max-width: 768px) {
+    .header{
+        display: none
+    }
+
+  }

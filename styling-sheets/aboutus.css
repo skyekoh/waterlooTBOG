@@ -5,7 +5,12 @@
     font-family: sans-serif;
 }
 
-.team-section{
+.cover-photo {
+    display: flex;
+    max-width: 100%;
+}
+
+#team-section{
     margin-top: 75px;
 }
 
