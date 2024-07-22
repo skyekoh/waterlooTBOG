@@ -5,13 +5,26 @@
     font-family: sans-serif;
 }
 
+.cover-photo-container {
+    height: 65vw;
+} 
+
 .cover-photo {
     display: flex;
-    max-width: 100%;
+    width: 100%;
+    height: auto;
+    position: relative;
+}
+
+.cover-title {
+    position: absolute;
+    font-size: 15vw;
+    top: 10%;
+    left: 14%;
 }
 
 #team-section{
-    margin-top: 75px;
+    padding-top: 60px;
 }
 
 .team-title h1{
