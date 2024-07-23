@@ -9,11 +9,33 @@
     <title>Our Team</title>
 </head>
 <body>
+
+
+    <nav id="hamburger-nav">
+        <div class="hamburger-menu">
+            <div class="hamburger-icon" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+            </div>
+            <div class="menu-links">
+                <li><a href="#home" onclick="toggleMenu()">home</a></li>
+                <li><a href="#who-we-are" onclick="toggleMenu()">who we are</a></li>
+                <li><a href="#team-section" onclick="toggleMenu()">our team</a></li>
+                <li><a href="#contact" onclick="toggleMenu()">contact</a></li>
+            </div>
+
+        </div>
+        <ul class="nav-links">
+
+        </ul>
+    </nav>
+
     <section id="header">
         <div class="header">
             <div class="middle-section">
               <img class="site-logo" src="assets/icon.jpg">
-              <a href="#cover-page">
+              <a href="#home">
                 <button class="home-button">
                   >home
                 </button>
@@ -28,7 +50,7 @@
           </div>
     </section>
 
-    <section id="cover-page">
+    <section id="home">
         <div class="cover-photo-container">
             <img 
                 src="assets/racebog.JPG" 
@@ -191,6 +213,7 @@
         </div>
     </section>
 
+    <script src="script.js"></script>
 </body>
 </html>
 
