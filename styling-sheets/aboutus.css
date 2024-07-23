@@ -21,6 +21,7 @@
     font-size: 15vw;
     top: 10%;
     left: 14%;
+    margin: auto;
 }
 
 #team-section{
@@ -83,6 +84,31 @@
     font-size: 2vh;
 }
 
+#contact {
+    padding-top: 60px;
+}
+.contact-header {
+    font-size: 40px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.contact-description {
+    font-size: 20px;
+    text-align: center;
+}
+.contact-container {
+    display: flex;
+    width: 50%;
+    margin-top: 20px ;
+    margin-bottom: 20px;
+    margin-right: auto;
+    margin-left: auto;
+    align-content: space-between;
+    justify-content: center;
+    align-items: center;
+}
+
+
 @media screen and (max-width: 768px) {
     .team-cards{
         direction: flex;
@@ -93,3 +119,4 @@
         margin: 1px auto;
     }
 }
+
