@@ -7,6 +7,7 @@
 
 .cover-photo-container {
     height: 65vw;
+    /* margin-top:500px; */
 } 
 
 .cover-photo {
@@ -14,6 +15,7 @@
     width: 100%;
     height: auto;
     position: relative;
+    z-index: -5;
 }
 
 .cover-title {
@@ -22,6 +24,7 @@
     top: 10%;
     left: 14%;
     margin: auto;
+    z-index: -4;
 }
 
 #team-section{
@@ -34,6 +37,7 @@
     text-align: center;
     position: relative;
     margin-bottom: 5vh;
+    z-index: -4;
 }
 
 .team-cards {
