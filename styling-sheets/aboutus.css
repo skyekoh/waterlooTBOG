@@ -33,9 +33,13 @@ html {
 
 /* ABOUT US SECTION */
 
-#who-we-are {
+#who-we-are{
     padding-top: 60px;
     text-align: center;
+}
+
+#who-we-are h1{
+    font-size: 3rem;
 }
 
 .about-us-container{
@@ -62,6 +66,36 @@ html {
     width: 300px;
     text-align: start;
     line-height: 150%;
+}
+
+.carousel {
+    position: relative;
+    /* overflow: hidden; */
+    width: 35vw; /* Adjust width as needed */
+    height: 20vw;
+}
+
+.carousel-item {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1s;
+}
+
+.carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: solid;
+    border-width: 2px;
+    border-color: black;
+    border-radius: 30px;
+}
+
+.carousel-item.active {
+    opacity: 1;
+    z-index: 1;
 }
 
 /* TEAM SECTION */
@@ -128,32 +162,35 @@ html {
 }
 
 /* SPONSORSHIP SECTION */
+
+#sponsors {
+    padding-top: 60px;
+}
+
 .sponsor-container{
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    margin-top: 100px;
     margin-left: 10%;
     margin-right: 10%;
 }
 
 .gold-title {
-    font-size: 2rem;
+    font-size: 2.75rem;
+    font-weight: 900;
+    margin-top: 15px;
 }
 
 .silver-title {
     font-size: 2.5rem;
+    font-weight: 800;
 }
 
 .bronze-title {
     font-size: 2rem;
     font-weight: 700;
 }
-
-
-
-/* I should change all the __sponsors to be sponsor logo, and the sponsor logo container to be specific to each tier */
 
 .silver-sponsors, .gold-sponsors, .bronze-sponsors{
     display: flex;
@@ -212,6 +249,7 @@ html {
     align-items: center;
 }
 
+/* MEDIA QUERIES  */
 
 @media screen and (max-width: 768px) {
     .team-cards{
@@ -222,5 +260,21 @@ html {
         width: 85%;
         margin: 1px auto;
     }
+    .about-us-container{
+        flex-direction: column;
+        justify-content: space-around;
+        height: 60vh;
+    }
+    .carousel {
+        position: relative;
+        overflow: hidden;
+        width: 70vw;
+        height: 40vw;
+    }
+    .our-story-text{
+        margin-top: 20px;
+    }
+
+
 }
 
