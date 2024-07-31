@@ -48,6 +48,8 @@ html {
     align-items: center;
     max-width: 80%;
     margin: 25px auto;
+    font-weight: 500;
+    font-size: 1.25rem;
 }
 
 .team-photo-container{
@@ -176,20 +178,32 @@ html {
     margin-right: 10%;
 }
 
+.sponsor-container h1{
+    font-size: 3rem;
+}
+
+.sponsor-request{
+    width: 400px;
+    margin-top: 15px;
+}
+
 .gold-title {
     font-size: 2.75rem;
     font-weight: 900;
     margin-top: 15px;
+    color: gold;
 }
 
 .silver-title {
     font-size: 2.5rem;
     font-weight: 800;
+    color: silver;
 }
 
 .bronze-title {
     font-size: 2rem;
     font-weight: 700;
+    color: rgb(205, 127, 50);
 }
 
 .silver-sponsors, .gold-sponsors, .bronze-sponsors{
@@ -197,6 +211,8 @@ html {
     flex-wrap: wrap;
     justify-content: space-evenly;
     width: 1000px;
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
 
 .sponsor-logo{
