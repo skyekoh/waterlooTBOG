@@ -30,6 +30,8 @@ html {
     transform: translateX(-50%);
     z-index: -4;
     line-height: 0.9;
+    color: whitesmoke;
+    -webkit-text-stroke: 3px black;
 }
 
 /* ABOUT US SECTION */
