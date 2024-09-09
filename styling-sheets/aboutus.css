@@ -138,7 +138,6 @@ html {
     box-shadow: 0px 2px 5px rgba(0,0,0, 0.2);
     margin: 0px 10px;
     padding: 10px;
-    text-align: center;
     transition: transform 0.6s ease;
     width: calc(25% - 10px);
 }
