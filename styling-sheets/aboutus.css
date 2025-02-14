@@ -284,7 +284,6 @@ html {
     }
 
     .team-cards{
-        direction: flex;
         flex-direction: column;
     }    
     .team-card{
