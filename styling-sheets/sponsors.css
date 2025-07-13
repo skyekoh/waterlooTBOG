@@ -1,0 +1,199 @@
+/* Sponsors Page Styles */
+
+/* Our Sponsors Section */
+.our-sponsors {
+    padding: 120px 0 80px 0;
+    background: var(--waterloo-white);
+    text-align: center;
+}
+
+.main-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: var(--waterloo-black);
+    margin-bottom: 20px;
+    font-family: 'Inter', sans-serif;
+}
+
+.main-subtitle {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 80px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+.sponsors-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.sponsor-logos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 40px;
+    padding: 60px;
+    background: #f8f9fa;
+    border-radius: 20px;
+    margin: 0 20px;
+}
+
+.sponsor-logo {
+    background: var(--waterloo-white);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 140px;
+    border: 1px solid #e9ecef;
+}
+
+.sponsor-logo:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    border-color: var(--waterloo-gold);
+}
+
+.sponsor-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: grayscale(30%);
+    transition: filter 0.3s ease;
+}
+
+.sponsor-logo:hover img {
+    filter: grayscale(0%);
+}
+
+/* Partnership Section */
+.partnership-section {
+    background: var(--waterloo-black);
+    padding: 100px 0;
+    text-align: center;
+    color: var(--waterloo-white);
+}
+
+.partnership-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.partnership-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: var(--waterloo-white);
+}
+
+.partnership-description {
+    font-size: 1.3rem;
+    line-height: 1.6;
+    margin-bottom: 50px;
+    color: #ccc;
+}
+
+.get-in-touch-btn {
+    display: inline-block;
+    background: var(--waterloo-gold);
+    color: var(--waterloo-black);
+    padding: 18px 40px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(255, 193, 7, 0.3);
+}
+
+.get-in-touch-btn:hover {
+    background: #e6ac00;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(255, 193, 7, 0.4);
+}
+
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .our-sponsors {
+        padding: 80px 0 60px 0;
+    }
+    
+    .main-title {
+        font-size: 2.5rem;
+    }
+    
+    .main-subtitle {
+        font-size: 1.1rem;
+        margin-bottom: 60px;
+    }
+    
+    .sponsor-logos {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 30px;
+        padding: 40px 30px;
+        margin: 0 10px;
+    }
+    
+    .sponsor-logo {
+        height: 120px;
+        padding: 20px;
+    }
+    
+    .partnership-section {
+        padding: 80px 0;
+    }
+    
+    .partnership-title {
+        font-size: 2.2rem;
+    }
+    
+    .partnership-description {
+        font-size: 1.1rem;
+    }
+    
+    .get-in-touch-btn {
+        padding: 16px 35px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-title {
+        font-size: 2rem;
+    }
+    
+    .sponsor-logos {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 20px;
+        padding: 30px 20px;
+        margin: 0 5px;
+    }
+    
+    .sponsor-logo {
+        height: 100px;
+        padding: 15px;
+    }
+    
+    .partnership-title {
+        font-size: 1.8rem;
+    }
+    
+    .partnership-description {
+        font-size: 1rem;
+        margin-bottom: 40px;
+    }
+    
+    .get-in-touch-btn {
+        padding: 14px 30px;
+        font-size: 0.95rem;
+    }
+} 
