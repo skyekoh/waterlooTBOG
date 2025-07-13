@@ -1,0 +1,270 @@
+/* Boggers Page Styles */
+
+/* Team Hero Section */
+.team-hero-section {
+    position: relative;
+    height: 60vh;
+    min-height: 400px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-background-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.hero-background-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.team-hero-title {
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 800;
+    color: var(--waterloo-white);
+    text-align: center;
+    margin: 0;
+}
+
+/* Team Intro Section */
+.team-intro {
+    padding: 80px 0;
+    background: var(--waterloo-white);
+    text-align: center;
+}
+
+.section-title {
+    font-size: 42px;
+    font-weight: 800;
+    color: var(--waterloo-black);
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+.section-subtitle {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--waterloo-gold);
+    margin-bottom: 30px;
+    line-height: 1.3;
+}
+
+.section-description {
+    font-size: 18px;
+    color: var(--waterloo-medium-gray);
+    line-height: 1.7;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Executive Team Section */
+.executive-team {
+    padding: 80px 0;
+    background: var(--waterloo-light-gray);
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    margin-top: 20px;
+}
+
+.executive-card {
+    background: var(--waterloo-white);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.executive-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.executive-image {
+    position: relative;
+    overflow: hidden;
+    height: 350px;
+    background: var(--waterloo-light-gray);
+}
+
+.executive-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.executive-card:hover .executive-image img {
+    transform: scale(1.05);
+}
+
+.executive-info {
+    padding: 30px;
+    text-align: center;
+}
+
+.executive-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--waterloo-black);
+    margin-bottom: 10px;
+    line-height: 1.2;
+}
+
+.executive-role {
+    font-size: 16px;
+    color: var(--waterloo-gold);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.executive-role::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 3px;
+    background: var(--waterloo-gold);
+    border-radius: 2px;
+}
+
+.executive-description {
+    font-size: 14px;
+    color: var(--waterloo-medium-gray);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Special styling for Captain and Spirit Captain */
+.executive-card:nth-child(1) .executive-role,
+.executive-card:nth-child(2) .executive-role {
+    color: var(--waterloo-gold);
+    font-weight: 700;
+}
+
+.executive-card:nth-child(1) .executive-role::after,
+.executive-card:nth-child(2) .executive-role::after {
+    background: var(--waterloo-gold);
+    width: 50px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .team-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .team-hero-section {
+        height: 50vh;
+        min-height: 300px;
+    }
+    
+    .team-hero-title {
+        font-size: 3rem;
+    }
+    
+    .team-intro {
+        padding: 60px 0;
+    }
+    
+    .section-title {
+        font-size: 32px;
+    }
+    
+    .section-subtitle {
+        font-size: 20px;
+    }
+    
+    .section-description {
+        font-size: 16px;
+    }
+    
+    .executive-team {
+        padding: 60px 0;
+    }
+    
+    .team-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+    }
+    
+    .executive-image {
+        height: 280px;
+    }
+    
+    .executive-info {
+        padding: 25px;
+    }
+    
+    .executive-name {
+        font-size: 20px;
+    }
+    
+    .executive-role {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .team-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .executive-card {
+        margin: 0 10px;
+    }
+    
+    .executive-image {
+        height: 250px;
+    }
+    
+    .executive-info {
+        padding: 20px;
+    }
+    
+    .executive-name {
+        font-size: 18px;
+    }
+    
+    .section-title {
+        font-size: 28px;
+    }
+    
+    .section-subtitle {
+        font-size: 18px;
+    }
+} 
