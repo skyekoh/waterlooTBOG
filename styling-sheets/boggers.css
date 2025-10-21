@@ -178,19 +178,6 @@
     width: 50px;
 }
 
-/* Special styling for Taner's image - making it smaller */
-.taner-image {
-    height: 250px !important; /* Reduced from 350px */
-    max-width: 80%; /* Limit width to 80% of container */
-    margin: 0 auto; /* Center the image container */
-    border-radius: 10px; /* Add some rounded corners */
-}
-
-.taner-image img {
-    object-fit: cover;
-    object-position: center; /* Center the image content */
-}
-
 /* Responsive Design */
 @media (max-width: 1024px) {
     .team-grid {
