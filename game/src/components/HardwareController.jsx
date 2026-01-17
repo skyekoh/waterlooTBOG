@@ -69,15 +69,16 @@ function HardwareController({ onCupSink, playerNumber }) {
       setPort(selectedPort)
       portRef.current = selectedPort
 
-      // Open port with baud rate (adjust if your Pico uses different rate)
-      await selectedPort.open({ baudRate: 9600 })
+      // Open port with baud rate (115200 is common for modern MCUs like Pico)
+      await selectedPort.open({ baudRate: 115200 })
       setIsConnected(true)
       setStatus('Connected')
 
-      // Set up reader
-      const textDecoder = new TextDecoderStream()
-      const readableStreamClosed = selectedPort.readable.pipeTo(textDecoder.writable)
-      const newReader = textDecoder.readable.getReader()
+      // Set up reader using pipeThrough (simpler and more reliable than pipeTo)
+      // This matches the working example: port.readable.pipeThrough(new TextDecoderStream()).getReader()
+      const newReader = selectedPort.readable
+        .pipeThrough(new TextDecoderStream())
+        .getReader()
       setReader(newReader)
 
       // Read data from serial port
