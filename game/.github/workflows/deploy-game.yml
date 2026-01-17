@@ -37,6 +37,8 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./game/dist
           destination_dir: ./game
+          keep_files: false
+          force_orphan: false
 
 
 

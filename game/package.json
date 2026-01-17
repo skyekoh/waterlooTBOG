@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "powershell -Command \"if (Test-Path 'index.html.source') { Copy-Item 'index.html.source' 'index.html' -Force; Write-Host 'Restored source index.html for build' }\"",
     "build": "vite build",
+    "postbuild": "powershell -Command \"Copy-Item 'dist/index.html' 'index.html.built' -Force; Copy-Item 'index.html.source' 'index.html' -Force; Write-Host 'Built index.html saved as index.html.built, source restored'\"",
     "preview": "vite preview",
-    "deploy": "npm run build && powershell -ExecutionPolicy Bypass -File ./deploy.ps1"
+    "deploy": "npm run build && powershell -ExecutionPolicy Bypass -File deploy.ps1"
   },
   "dependencies": {
     "react": "^18.2.0",
