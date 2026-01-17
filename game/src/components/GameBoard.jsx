@@ -55,6 +55,8 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
             lastCupCountRef.current.player1 = currentCupCount
           }
           setPlayer1Cups(data.player1Cups)
+          // Ensure guesses match cups sunk count (guesses increment with each cup sunk)
+          setPlayer1Guesses(currentCupCount)
         }
         if (data.player2Cups) {
           const currentCupCount = data.player2Cups.filter(cup => cup).length
@@ -65,6 +67,8 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
             lastCupCountRef.current.player2 = currentCupCount
           }
           setPlayer2Cups(data.player2Cups)
+          // Ensure guesses match cups sunk count (guesses increment with each cup sunk)
+          setPlayer2Guesses(currentCupCount)
         }
         if (data.player1SnippetPlayed !== undefined) setPlayer1SnippetPlayed(data.player1SnippetPlayed)
         if (data.player2SnippetPlayed !== undefined) setPlayer2SnippetPlayed(data.player2SnippetPlayed)
@@ -137,7 +141,8 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
     
     newCups[cupToSink] = true
     const newSunkCount = sunkCount + 1
-    const newGuesses = player === 1 ? player1Guesses + 1 : player2Guesses + 1
+    // Guesses should always equal the number of cups sunk (increment with each cup)
+    const newGuesses = newSunkCount
 
     // Update local state
     if (player === 1) {
