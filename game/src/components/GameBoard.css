@@ -1,0 +1,293 @@
+.game-board {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.game-info {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 20px;
+  margin-bottom: 40px;
+  align-items: center;
+}
+
+.player-info {
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid var(--waterloo-gold);
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+}
+
+.player-info h3 {
+  font-size: 24px;
+  color: var(--waterloo-gold);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.player-info .guesses {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--waterloo-white);
+}
+
+.you-label {
+  display: block;
+  font-size: 14px;
+  color: var(--waterloo-gold);
+  margin-top: 5px;
+  font-weight: 600;
+}
+
+.song-info {
+  background: rgba(0, 0, 0, 0.7);
+  border: 3px solid var(--waterloo-gold);
+  border-radius: 15px;
+  padding: 30px;
+  text-align: center;
+}
+
+.song-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--waterloo-gold);
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.winner-banner {
+  background: rgba(255, 209, 0, 0.2);
+  border: 3px solid var(--waterloo-gold);
+  border-radius: 15px;
+  padding: 30px;
+  text-align: center;
+  margin-bottom: 30px;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+.winner-banner h2 {
+  font-size: 48px;
+  color: var(--waterloo-gold);
+  margin-bottom: 10px;
+}
+
+.winner-banner p {
+  font-size: 20px;
+  color: var(--waterloo-white);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+.game-area {
+  position: relative;
+  width: 100%;
+  min-height: 600px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 3px solid var(--waterloo-gold);
+  border-radius: 20px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cups-row {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.cups-row-top {
+  margin-bottom: 40px;
+}
+
+.cups-row-bottom {
+  margin-top: 40px;
+}
+
+.ball-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  position: relative;
+}
+
+.shoot-instructions {
+  text-align: center;
+  color: var(--waterloo-gold);
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 20px;
+  background: rgba(255, 209, 0, 0.1);
+  border-radius: 10px;
+  border: 2px dashed var(--waterloo-gold);
+}
+
+.shoot-instructions p {
+  margin: 5px 0;
+}
+
+.shoot-hint {
+  font-size: 14px !important;
+  color: var(--waterloo-white) !important;
+  margin-top: 10px !important;
+  font-style: italic;
+}
+
+.test-sink-button {
+  margin-top: 20px;
+  padding: 15px 30px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--waterloo-black);
+  background: var(--waterloo-gold);
+  border: 3px solid var(--waterloo-gold);
+  border-radius: 10px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 209, 0, 0.3);
+}
+
+.test-sink-button:hover:not(:disabled) {
+  background: var(--waterloo-white);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 209, 0, 0.5);
+}
+
+.test-sink-button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(255, 209, 0, 0.3);
+}
+
+.test-sink-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--waterloo-medium-gray);
+  border-color: var(--waterloo-medium-gray);
+}
+
+.test-button-hint {
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--waterloo-gold);
+  font-style: italic;
+}
+
+.snippet-info {
+  background: rgba(255, 209, 0, 0.1);
+  border: 1px solid var(--waterloo-gold);
+  border-radius: 8px;
+  padding: 10px;
+  margin: 15px 0;
+  text-align: center;
+}
+
+.snippet-info p {
+  color: var(--waterloo-gold);
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.play-snippet-button {
+  margin-top: 15px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--waterloo-black);
+  background: var(--waterloo-gold);
+  border: 2px solid var(--waterloo-gold);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(255, 209, 0, 0.3);
+  width: 100%;
+}
+
+.play-snippet-button:hover:not(:disabled) {
+  background: var(--waterloo-white);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 209, 0, 0.5);
+}
+
+.play-snippet-button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(255, 209, 0, 0.3);
+}
+
+.play-snippet-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--waterloo-medium-gray);
+  border-color: var(--waterloo-medium-gray);
+}
+
+.snippet-hint {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--waterloo-gold);
+  font-style: italic;
+}
+
+.turn-indicator {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--waterloo-gold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 15px;
+  background: rgba(255, 209, 0, 0.1);
+  border-radius: 10px;
+}
+
+@media (max-width: 1024px) {
+  .game-info {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .player-info {
+    order: -1;
+  }
+
+  .cups-row {
+    gap: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .game-area {
+    padding: 20px;
+    min-height: 400px;
+  }
+
+  .cups-row {
+    gap: 10px;
+  }
+
+  .winner-banner h2 {
+    font-size: 32px;
+  }
+}
+

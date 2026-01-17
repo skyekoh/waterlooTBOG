@@ -1,0 +1,125 @@
+.guess-input-container {
+  margin-top: 20px;
+}
+
+.guess-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.guess-input {
+  flex: 1;
+  padding: 15px 20px;
+  border: 2px solid var(--waterloo-gold);
+  border-radius: 30px;
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--waterloo-white);
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s ease;
+}
+
+.guess-input:focus {
+  outline: none;
+  border-color: var(--waterloo-white);
+  background: rgba(0, 0, 0, 0.7);
+  box-shadow: 0 0 10px rgba(255, 209, 0, 0.3);
+}
+
+.guess-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.guess-input.guess-correct {
+  border-color: #4caf50;
+  background: rgba(76, 175, 80, 0.2);
+}
+
+.guess-input.guess-incorrect {
+  border-color: #f44336;
+  background: rgba(244, 67, 54, 0.2);
+}
+
+.guess-submit {
+  padding: 15px 30px;
+  background: var(--waterloo-gold);
+  color: var(--waterloo-black);
+  border: none;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.guess-submit:hover:not(:disabled) {
+  background: var(--waterloo-white);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 209, 0, 0.4);
+}
+
+.guess-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.guess-result {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  animation: slideIn 0.3s ease;
+}
+
+.guess-result.correct {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+  border: 2px solid #4caf50;
+}
+
+.guess-result.incorrect {
+  background: rgba(244, 67, 54, 0.2);
+  color: #f44336;
+  border: 2px solid #f44336;
+}
+
+.guess-result i {
+  font-size: 20px;
+}
+
+.guess-hint {
+  text-align: center;
+  color: var(--waterloo-medium-gray);
+  font-size: 14px;
+  font-style: italic;
+  margin-top: 10px;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,124 @@
+.leaderboard {
+  color: var(--waterloo-white);
+  position: relative;
+}
+
+.leaderboard-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--waterloo-gold);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.leaderboard-subtitle {
+  font-size: 14px;
+  color: var(--waterloo-medium-gray);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.leaderboard-loading,
+.leaderboard-empty {
+  text-align: center;
+  color: var(--waterloo-medium-gray);
+  padding: 20px;
+  font-style: italic;
+}
+
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px;
+  background: rgba(255, 209, 0, 0.05);
+  border: 1px solid rgba(255, 209, 0, 0.2);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.leaderboard-item:hover {
+  background: rgba(255, 209, 0, 0.1);
+  border-color: rgba(255, 209, 0, 0.4);
+  transform: translateX(5px);
+}
+
+.leaderboard-rank {
+  flex-shrink: 0;
+}
+
+.rank-number {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--waterloo-gold);
+  width: 40px;
+  display: inline-block;
+  text-align: center;
+}
+
+.leaderboard-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.leaderboard-player {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.player-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--waterloo-white);
+}
+
+.player-school {
+  font-size: 12px;
+  color: var(--waterloo-medium-gray);
+  font-style: italic;
+}
+
+.leaderboard-score {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.score-guesses {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--waterloo-gold);
+}
+
+.score-label {
+  font-size: 14px;
+  color: var(--waterloo-medium-gray);
+  text-transform: lowercase;
+  letter-spacing: 0.5px;
+}
+
+.leaderboard-meta {
+  font-size: 12px;
+  color: var(--waterloo-medium-gray);
+}
+
+.meta-date {
+  font-family: 'Courier New', monospace;
+}
+
+
+
+
+
+

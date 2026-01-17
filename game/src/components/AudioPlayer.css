@@ -1,0 +1,29 @@
+.audio-player {
+  margin: 20px 0;
+}
+
+.audio-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--waterloo-gold);
+  font-size: 16px;
+  font-weight: 600;
+  padding: 10px;
+  background: rgba(255, 209, 0, 0.1);
+  border-radius: 8px;
+}
+
+.audio-status i {
+  font-size: 20px;
+}
+
+
+
+
+
+
+
+
+
