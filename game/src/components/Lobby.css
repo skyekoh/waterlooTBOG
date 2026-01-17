@@ -1,0 +1,372 @@
+.lobby {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.lobby-content {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  border: 3px solid var(--waterloo-gold);
+  border-radius: 20px;
+  padding: 40px;
+  text-align: center;
+}
+
+.lobby-title {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--waterloo-gold);
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.lobby-subtitle {
+  font-size: 16px;
+  color: var(--waterloo-white);
+  margin-bottom: 30px;
+}
+
+.player-id {
+  color: var(--waterloo-gold);
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+}
+
+.lobby-actions {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.btn-create-room,
+.btn-join-room,
+.btn-game-master {
+  background: var(--waterloo-gold);
+  color: var(--waterloo-black);
+  padding: 15px 30px;
+  border: none;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+  max-width: 200px;
+}
+
+.btn-create-room:hover,
+.btn-join-room:hover,
+.btn-game-master:hover {
+  background: var(--waterloo-white);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 209, 0, 0.4);
+}
+
+.btn-game-master {
+  background: #9c27b0;
+  color: var(--waterloo-white);
+}
+
+.btn-game-master:hover {
+  background: #7b1fa2;
+  color: var(--waterloo-white);
+}
+
+.room-info {
+  background: rgba(255, 209, 0, 0.1);
+  border: 2px solid var(--waterloo-gold);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.room-label {
+  font-size: 14px;
+  color: var(--waterloo-gold);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.room-id {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--waterloo-white);
+  font-family: 'Courier New', monospace;
+  margin-bottom: 10px;
+  word-break: break-all;
+}
+
+.room-instructions {
+  font-size: 14px;
+  color: var(--waterloo-medium-gray);
+}
+
+.join-room-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.player-info-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.player-info-input {
+  width: 100%;
+  padding: 12px 20px;
+  border: 2px solid var(--waterloo-gold);
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--waterloo-white);
+  font-size: 16px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.player-info-input::placeholder {
+  color: var(--waterloo-medium-gray);
+}
+
+.player-info-input:focus {
+  outline: none;
+  border-color: var(--waterloo-white);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.room-id-input {
+  flex: 1;
+  padding: 15px 20px;
+  border: 2px solid var(--waterloo-gold);
+  border-radius: 30px;
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--waterloo-white);
+  font-size: 16px;
+  font-family: 'Courier New', monospace;
+}
+
+.room-id-input:focus {
+  outline: none;
+  border-color: var(--waterloo-white);
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.btn-submit-join {
+  background: var(--waterloo-gold);
+  color: var(--waterloo-black);
+  padding: 15px 30px;
+  border: none;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.btn-submit-join:hover:not(:disabled) {
+  background: var(--waterloo-white);
+  transform: translateY(-2px);
+}
+
+.btn-submit-join:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.game-instructions {
+  margin-top: 30px;
+  text-align: left;
+  background: rgba(255, 209, 0, 0.05);
+  border-left: 4px solid var(--waterloo-gold);
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.game-instructions h3 {
+  color: var(--waterloo-gold);
+  font-size: 20px;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+}
+
+.game-instructions ul {
+  list-style: none;
+  padding: 0;
+}
+
+.game-instructions li {
+  color: var(--waterloo-white);
+  font-size: 16px;
+  margin-bottom: 10px;
+  padding-left: 25px;
+  position: relative;
+}
+
+.game-instructions li:before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--waterloo-gold);
+  font-weight: bold;
+}
+
+.password-prompt-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.password-prompt {
+  background: rgba(0, 0, 0, 0.95);
+  border: 3px solid var(--waterloo-gold);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+}
+
+.password-prompt h3 {
+  color: var(--waterloo-gold);
+  font-size: 24px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.password-prompt p {
+  color: var(--waterloo-white);
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.password-input {
+  width: 100%;
+  padding: 15px 20px;
+  border: 2px solid var(--waterloo-gold);
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--waterloo-white);
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 15px;
+  letter-spacing: 2px;
+  transition: all 0.3s ease;
+}
+
+.password-input::placeholder {
+  color: var(--waterloo-medium-gray);
+  letter-spacing: normal;
+}
+
+.password-input:focus {
+  outline: none;
+  border-color: var(--waterloo-white);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.password-error {
+  color: #ff4444;
+  font-size: 14px;
+  margin-bottom: 15px;
+  min-height: 20px;
+}
+
+.password-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.btn-submit-password,
+.btn-cancel-password {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-submit-password {
+  background: var(--waterloo-gold);
+  color: var(--waterloo-black);
+}
+
+.btn-submit-password:hover {
+  background: var(--waterloo-white);
+  transform: translateY(-2px);
+}
+
+.btn-cancel-password {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--waterloo-white);
+  border: 2px solid var(--waterloo-medium-gray);
+}
+
+.btn-cancel-password:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: var(--waterloo-white);
+}
+
+@media (max-width: 768px) {
+  .lobby-content {
+    padding: 30px 20px;
+  }
+
+  .lobby-title {
+    font-size: 28px;
+  }
+
+  .lobby-actions {
+    flex-direction: column;
+  }
+
+  .btn-create-room,
+  .btn-join-room {
+    max-width: 100%;
+  }
+
+  .password-prompt {
+    padding: 30px 20px;
+  }
+
+  .password-actions {
+    flex-direction: column;
+  }
+
+  .btn-submit-password,
+  .btn-cancel-password {
+    width: 100%;
+  }
+}
+
+
+
+

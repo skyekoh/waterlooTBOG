@@ -1,0 +1,277 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, var(--waterloo-black) 0%, var(--waterloo-dark-gray) 100%);
+  position: relative;
+}
+
+.app-header {
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 3px solid var(--waterloo-gold);
+  padding: 20px 40px;
+  z-index: 100;
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.header-logo {
+  height: 50px;
+  width: auto;
+}
+
+.header-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--waterloo-gold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  flex: 1;
+  text-align: center;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.trophy-button {
+  background: var(--waterloo-gold);
+  border: 2px solid var(--waterloo-gold);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.trophy-button:hover {
+  background: var(--waterloo-white);
+  transform: scale(1.1);
+  box-shadow: 0 5px 15px rgba(255, 209, 0, 0.4);
+}
+
+.trophy-button:active {
+  transform: scale(0.95);
+}
+
+.trophy-icon {
+  width: 28px;
+  height: 28px;
+  color: var(--waterloo-black);
+  transition: all 0.3s ease;
+}
+
+.trophy-button:hover .trophy-icon {
+  color: var(--waterloo-black);
+}
+
+.app-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  position: relative;
+}
+
+.leaderboard-sidebar {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  width: 320px;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(15px);
+  border: 2px solid var(--waterloo-gold);
+  border-radius: 12px;
+  padding: 20px;
+  z-index: 200;
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.game-finished,
+.waiting-screen {
+  text-align: center;
+  color: var(--waterloo-white);
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.waiting-content {
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid var(--waterloo-gold);
+  border-radius: 20px;
+  padding: 40px;
+  backdrop-filter: blur(10px);
+}
+
+.waiting-screen h2 {
+  font-size: 36px;
+  color: var(--waterloo-gold);
+  margin-bottom: 30px;
+}
+
+.waiting-info {
+  margin: 30px 0;
+  padding: 20px;
+  background: rgba(255, 209, 0, 0.1);
+  border-radius: 10px;
+  border: 1px solid var(--waterloo-gold);
+}
+
+.waiting-info p {
+  margin: 10px 0;
+  font-size: 18px;
+}
+
+.waiting-info strong {
+  color: var(--waterloo-gold);
+}
+
+.player-name {
+  color: var(--waterloo-white);
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 15px;
+}
+
+.waiting-message {
+  margin: 30px 0;
+  padding: 20px;
+}
+
+.waiting-message p {
+  font-size: 18px;
+  margin: 10px 0;
+  color: var(--waterloo-white);
+}
+
+.waiting-hint {
+  color: var(--waterloo-medium-gray);
+  font-size: 14px;
+  font-style: italic;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--waterloo-gold);
+  padding: 12px 30px;
+  border: 2px solid var(--waterloo-gold);
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+}
+
+.btn-secondary:hover {
+  background: var(--waterloo-gold);
+  color: var(--waterloo-black);
+  transform: translateY(-2px);
+}
+
+.game-finished h2 {
+  font-size: 48px;
+  color: var(--waterloo-gold);
+  margin-bottom: 30px;
+}
+
+.btn-primary {
+  background: var(--waterloo-gold);
+  color: var(--waterloo-black);
+  padding: 15px 40px;
+  border: none;
+  border-radius: 30px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: var(--waterloo-white);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 209, 0, 0.4);
+}
+
+@media (max-width: 1200px) {
+  .leaderboard-sidebar {
+    position: fixed;
+    top: 90px;
+    right: 10px;
+    width: 280px;
+    max-height: calc(100vh - 120px);
+  }
+}
+
+@media (max-width: 768px) {
+  .leaderboard-sidebar {
+    position: fixed;
+    top: 85px;
+    right: 10px;
+    left: 10px;
+    width: auto;
+    max-height: calc(100vh - 110px);
+  }
+  
+  .trophy-button {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .trophy-icon {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-title {
+    font-size: 20px;
+  }
+
+  .header-logo {
+    height: 35px;
+  }
+
+  .app-header {
+    padding: 15px 20px;
+  }
+}
+
+
+
+
+
+
