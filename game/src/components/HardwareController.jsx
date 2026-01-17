@@ -119,11 +119,10 @@ function HardwareController({ onCupSink, playerNumber }) {
           break
         }
 
+        // Match the working example exactly: check if (value) first
         if (value) {
-          console.log('📡 Received value from serial reader')
+          console.log('📥 Raw serial data received:', value, 'Type:', typeof value, 'Length:', value.length)
           processSerialData(value)
-        } else {
-          console.log('📡 Received empty value')
         }
       }
     } catch (error) {
@@ -135,38 +134,31 @@ function HardwareController({ onCupSink, playerNumber }) {
 
   const processSerialData = (data) => {
     try {
-      // DEBUG: Log raw data received
-      console.log('📥 Raw serial data received:', data, 'Type:', typeof data, 'Length:', data.length)
-      console.log('📥 Character codes:', Array.from(data).map(c => c.charCodeAt(0)))
+      // Match the working example EXACTLY:
+      // if (value) {
+      //   if (value.includes("1")) {
+      //     // trigger cup hit
+      //   }
+      // }
       
-      // Any data received means a cup was hit
-      // NOTE: Arduino/Pico does NOT send player number - only sends a signal like "1"
-      // The player number is already known by this laptop/browser (passed as prop from GameBoard)
-      // Since each laptop connects to one Arduino (one per player), we know which player this is
+      // DEBUG: Log what we received
+      console.log('📥 Received value:', data, 'Type:', typeof data)
       
-      // Split by newlines in case multiple signals came in one chunk
-      const lines = data.split('\n').map(line => line.trim()).filter(line => line.length > 0)
-      
-      // Process each line (each cup hit)
-      for (const line of lines) {
-        if (line.length === 0) {
-          continue
-        }
-
-        // DEBUG: Log processed line
-        console.log('✅ Processed line:', line)
-        
-        // Any non-empty signal = cup hit!
-        // playerNumber comes from browser context (which laptop this is), NOT from Arduino
+      // Check if value contains "1" (exactly like the working example)
+      // Your Pico sends "1\n". We check if the incoming string contains "1"
+      if (data && data.includes("1")) {
+        console.log('✅ Cup hit detected! Value contains "1":', data)
         setStatus(`Ball sunk! Player ${playerNumber} hit a cup!`)
         
-        // Trigger cup sink callback with this laptop's player number (known from browser context)
+        // Trigger callback - exactly like the working example increments counter
         if (onCupSink) {
           onCupSink(playerNumber)
         }
+      } else {
+        console.log('⚠️ Value does not contain "1", ignoring:', JSON.stringify(data))
       }
     } catch (error) {
-      console.error('Error processing serial data:', error, 'Raw data:', data)
+      console.error('❌ Error processing serial data:', error, 'Raw data:', data)
     }
   }
 
