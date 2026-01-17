@@ -28,7 +28,6 @@ function Lobby({ playerId, onCreateRoom, onJoinRoom, onCreateGameMaster, roomId 
     <div className="lobby">
       <div className="lobby-content">
         <h2 className="lobby-title">Game Lobby</h2>
-        <p className="lobby-subtitle">Player ID: <span className="player-id">{playerId}</span></p>
         
         <div className="lobby-actions">
           <button 
