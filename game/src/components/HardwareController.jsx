@@ -32,8 +32,40 @@ function HardwareController({ onCupSink, playerNumber }) {
     }
 
     try {
+      // First, ensure any existing connection is properly closed
+      if (portRef.current) {
+        try {
+          if (portRef.current.readable) {
+            // Port might be open, try to close it
+            await portRef.current.close()
+          }
+        } catch (closeError) {
+          console.warn('Error closing existing port:', closeError)
+          // Continue anyway - might already be closed
+        }
+        portRef.current = null
+        setPort(null)
+      }
+
+      if (reader) {
+        try {
+          await reader.cancel()
+        } catch (cancelError) {
+          console.warn('Error canceling reader:', cancelError)
+        }
+        setReader(null)
+      }
+
       // Request port access
       const selectedPort = await navigator.serial.requestPort()
+      
+      // Check if port is already open
+      if (selectedPort.readable) {
+        setStatus('Port already in use. Please disconnect and try again.')
+        setIsConnected(false)
+        return
+      }
+
       setPort(selectedPort)
       portRef.current = selectedPort
 
@@ -52,8 +84,27 @@ function HardwareController({ onCupSink, playerNumber }) {
       readSerialData(newReader)
     } catch (error) {
       console.error('Error connecting to device:', error)
-      setStatus(`Connection error: ${error.message}`)
+      
+      // Provide more specific error messages
+      let errorMessage = 'Connection error: '
+      if (error.name === 'NetworkError') {
+        errorMessage += 'Failed to open serial port. The port may be in use by another application. Please close other programs using the serial port and try again.'
+      } else if (error.name === 'NotFoundError') {
+        errorMessage += 'Device not found. Please ensure your MCU is connected and try again.'
+      } else if (error.name === 'SecurityError') {
+        errorMessage += 'Permission denied. Please grant serial port access and try again.'
+      } else {
+        errorMessage += error.message || 'Unknown error occurred'
+      }
+      
+      setStatus(errorMessage)
       setIsConnected(false)
+      
+      // Clean up on error
+      if (portRef.current) {
+        portRef.current = null
+        setPort(null)
+      }
     }
   }
 
@@ -104,30 +155,75 @@ function HardwareController({ onCupSink, playerNumber }) {
 
   const disconnectDevice = async () => {
     try {
+      // Cancel reader first
       if (reader) {
-        await reader.cancel()
+        try {
+          await reader.cancel()
+        } catch (cancelError) {
+          console.warn('Error canceling reader:', cancelError)
+        }
         setReader(null)
       }
-      if (port) {
-        await port.close()
+
+      // Close port
+      const portToClose = port || portRef.current
+      if (portToClose) {
+        try {
+          // Check if port is open before closing
+          if (portToClose.readable || portToClose.writable) {
+            await portToClose.close()
+          }
+        } catch (closeError) {
+          console.warn('Error closing port:', closeError)
+          // Port might already be closed, continue anyway
+        }
         setPort(null)
         portRef.current = null
       }
+
       setIsConnected(false)
       setStatus('Disconnected')
     } catch (error) {
       console.error('Error disconnecting:', error)
+      // Force reset state even if cleanup fails
+      setIsConnected(false)
+      setStatus('Disconnected')
+      setPort(null)
+      setReader(null)
+      portRef.current = null
     }
   }
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (portRef.current) {
-        disconnectDevice()
+      // Cleanup function - don't call async disconnectDevice directly
+      const cleanup = async () => {
+        try {
+          if (reader) {
+            try {
+              await reader.cancel()
+            } catch (e) {
+              // Ignore cleanup errors
+            }
+          }
+          if (portRef.current) {
+            try {
+              const portToClose = portRef.current
+              if (portToClose.readable || portToClose.writable) {
+                await portToClose.close()
+              }
+            } catch (e) {
+              // Ignore cleanup errors
+            }
+          }
+        } catch (error) {
+          // Ignore cleanup errors
+        }
       }
+      cleanup()
     }
-  }, [])
+  }, [reader, port])
 
   if (!isSerialSupported) {
     return (

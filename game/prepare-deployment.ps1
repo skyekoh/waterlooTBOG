@@ -32,3 +32,4 @@ Write-Host "  1. Commit index.html.built" -ForegroundColor White
 Write-Host "  2. After push, rename it to index.html in GitHub web UI or next commit" -ForegroundColor White
 Write-Host "  OR: git mv game/index.html.built game/index.html && git commit -m 'Use built index.html'" -ForegroundColor White
 
+
