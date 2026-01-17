@@ -111,14 +111,19 @@ function HardwareController({ onCupSink, playerNumber }) {
 
   const readSerialData = async (serialReader) => {
     try {
+      console.log('📡 Starting to read serial data...')
       while (true) {
         const { value, done } = await serialReader.read()
         if (done) {
+          console.log('📡 Serial reader done')
           break
         }
 
         if (value) {
+          console.log('📡 Received value from serial reader')
           processSerialData(value)
+        } else {
+          console.log('📡 Received empty value')
         }
       }
     } catch (error) {
@@ -130,24 +135,35 @@ function HardwareController({ onCupSink, playerNumber }) {
 
   const processSerialData = (data) => {
     try {
+      // DEBUG: Log raw data received
+      console.log('📥 Raw serial data received:', data, 'Type:', typeof data, 'Length:', data.length)
+      console.log('📥 Character codes:', Array.from(data).map(c => c.charCodeAt(0)))
+      
       // Any data received means a cup was hit
       // NOTE: Arduino/Pico does NOT send player number - only sends a signal like "1"
       // The player number is already known by this laptop/browser (passed as prop from GameBoard)
       // Since each laptop connects to one Arduino (one per player), we know which player this is
-      const trimmed = data.trim()
       
-      // Ignore empty signals
-      if (trimmed.length === 0) {
-        return
-      }
+      // Split by newlines in case multiple signals came in one chunk
+      const lines = data.split('\n').map(line => line.trim()).filter(line => line.length > 0)
+      
+      // Process each line (each cup hit)
+      for (const line of lines) {
+        if (line.length === 0) {
+          continue
+        }
 
-      // Any non-empty signal = cup hit!
-      // playerNumber comes from browser context (which laptop this is), NOT from Arduino
-      setStatus(`Ball sunk! Player ${playerNumber} hit a cup!`)
-      
-      // Trigger cup sink callback with this laptop's player number (known from browser context)
-      if (onCupSink) {
-        onCupSink(playerNumber)
+        // DEBUG: Log processed line
+        console.log('✅ Processed line:', line)
+        
+        // Any non-empty signal = cup hit!
+        // playerNumber comes from browser context (which laptop this is), NOT from Arduino
+        setStatus(`Ball sunk! Player ${playerNumber} hit a cup!`)
+        
+        // Trigger cup sink callback with this laptop's player number (known from browser context)
+        if (onCupSink) {
+          onCupSink(playerNumber)
+        }
       }
     } catch (error) {
       console.error('Error processing serial data:', error, 'Raw data:', data)
