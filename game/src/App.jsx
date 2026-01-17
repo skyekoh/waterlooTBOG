@@ -233,7 +233,6 @@ function App() {
               </div>
               <div className="waiting-message">
                 <p>⏳ Waiting for Game Master to start the game...</p>
-                <p className="waiting-hint">The game will begin automatically when the Game Master clicks "Start Game"</p>
               </div>
               <button onClick={startNewGame} className="btn-secondary">Leave Room</button>
             </div>

@@ -168,18 +168,6 @@ function HardwareController({ onCupSink, playerNumber }) {
         </div>
       )}
 
-      <div className="hardware-docs">
-        <details>
-          <summary>Expected Pico Data Format</summary>
-          <div className="format-info">
-            <p><strong>Simple signal (any text):</strong></p>
-            <code>1</code> or <code>hit</code> or <code>CUP</code> or any string
-            <p><strong>How it works:</strong></p>
-            <p>Each laptop connects to one Pico. When the Pico sends any signal, it means a cup was hit. The player number is determined by which laptop you're on (Player {playerNumber} in this case).</p>
-            <p>Any non-empty signal = cup hit! The software knows which player based on the connection.</p>
-          </div>
-        </details>
-      </div>
     </div>
   )
 }

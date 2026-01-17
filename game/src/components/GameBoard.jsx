@@ -469,7 +469,7 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
           {gameStatus === 'playing' && (
             <div className="shoot-instructions">
               <p>Sink all the cups or guess the song first to win!</p>
-              <p className="shoot-hint">Alternate turns to shoot the ball.</p>
+              <p className="shoot-hint">Alternate turns shooting the ball.</p>
               {/* Test Button - Sink a Cup (for testing without hardware) */}
               <button
                 onClick={() => handleCupSink(isPlayer1.current ? 1 : 2)}

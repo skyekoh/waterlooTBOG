@@ -144,7 +144,7 @@ function Lobby({ playerId, onCreateRoom, onJoinRoom, onCreateGameMaster, roomId 
           <h3>How to Play</h3>
           <ul>
             <li>1. Game Master creates a game, then players join with Room ID</li>
-            <li>2. Shoot the ball into cups to unlock song snippets (both players can shoot anytime)</li>
+            <li>2. Shoot the ball into cups to unlock song snippets</li>
             <li>3. Guess the song to win!</li>
             <li>4. First player to guess correctly OR sink all 6 cups wins!</li>
           </ul>
