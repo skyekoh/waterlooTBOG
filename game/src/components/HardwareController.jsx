@@ -1,20 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import './HardwareController.css'
 
-/**
- * Hardware Controller for Raspberry Pi Pico Integration
- * 
- * Each laptop connects to one Pico (one per player)
- * Since we know which player this laptop is, we only need a simple signal from the Pico
- * 
- * Expected serial data format from Pico:
- * - Any signal/string indicates a cup was hit
- * - Examples: "1", "hit", "CUP", or just any text
- * - The player number is determined by which laptop/browser this is
- * 
- * Note: It doesn't matter which specific cup was hit - any cup hit removes one cup
- * and plays the next snippet in sequence.
- */
 function HardwareController({ onCupSink, playerNumber }) {
   const [isConnected, setIsConnected] = useState(false)
   const [port, setPort] = useState(null)
@@ -146,7 +132,6 @@ function HardwareController({ onCupSink, playerNumber }) {
         // Split by "1" and count - but only trigger once per read to avoid rapid duplicate triggers
         // The debouncing in GameBoard will handle rapid successive reads
         console.log('✅ Cup hit detected! Value contains "1":', data)
-        setStatus(`Ball sunk! Player ${playerNumber} hit a cup!`)
         
         // Trigger callback once per read (GameBoard has debouncing to prevent rapid duplicates)
         // If multiple "1"s are in one read, we'll trigger once - the firmware's own debouncing

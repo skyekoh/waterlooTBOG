@@ -38,6 +38,7 @@ function App() {
   const [playerInfo, setPlayerInfo] = useState({ name: '', school: '', playerNumber: null })
   const hasJoinedRoomRef = useRef(false) // Track if we've already joined the room (to prevent repeated logs)
   const previousRoomIdRef = useRef(null) // Track previous room ID to detect room changes
+  const roomUnsubscribeRef = useRef(null) // Store the unsubscribe function to clean up listeners
 
   // Generate or load player ID
   useEffect(() => {
@@ -52,37 +53,45 @@ function App() {
   // createRoom removed - only Game Master can create games now
 
   const joinRoom = (roomIdToJoin, playerName, playerSchool, playerNumber = null) => {
+    // CRITICAL: Clean up existing listener if one exists
+    if (roomUnsubscribeRef.current) {
+      console.log('🧹 Cleaning up previous room listener')
+      roomUnsubscribeRef.current()
+      roomUnsubscribeRef.current = null
+    }
+    
     const roomRef = ref(database, `rooms/${roomIdToJoin}`)
     
     // Only reset hasJoinedRoomRef if we're joining a DIFFERENT room
     if (previousRoomIdRef.current !== roomIdToJoin) {
       hasJoinedRoomRef.current = false
       previousRoomIdRef.current = roomIdToJoin
+      console.log('🔄 New room detected, resetting join flag')
     }
     
     // Listen to room changes (including game state)
-    onValue(roomRef, (snapshot) => {
+    const unsubscribe = onValue(roomRef, (snapshot) => {
       const data = snapshot.val()
       if (data) {
         let assignedPlayerNumber = null
         
         // First, check if this player is already in the room
         if (data.player1 === playerId) {
-          // This is player 1 - check if we've already logged this join
+          // This is player 1 - ONLY log once on initial join
           assignedPlayerNumber = 1
           if (!hasJoinedRoomRef.current) {
             console.log('🎮 Player 1 joining room:', { roomId: roomIdToJoin, playerId, playerName, playerSchool })
             hasJoinedRoomRef.current = true
           }
-          // Don't log anything else - we're already in the room, just updating state
+          // NEVER log again - even if listener fires multiple times
         } else if (data.player2 === playerId) {
-          // This is player 2 - check if we've already logged this join
+          // This is player 2 - ONLY log once on initial join
           assignedPlayerNumber = 2
           if (!hasJoinedRoomRef.current) {
             console.log('🎮 Player 2 joining room:', { roomId: roomIdToJoin, playerId, playerName, playerSchool })
             hasJoinedRoomRef.current = true
           }
-          // Don't log anything else - we're already in the room, just updating state
+          // NEVER log again - even if listener fires multiple times
         } else if (!data.player1) {
           // First player to join - becomes Player 1
           assignedPlayerNumber = 1
@@ -92,6 +101,7 @@ function App() {
             set(ref(database, `rooms/${roomIdToJoin}/player1`), playerId)
             set(ref(database, `rooms/${roomIdToJoin}/player1Info`), { name: playerName, school: playerSchool })
           }
+          // NEVER log again after initial join
         } else if (!data.player2) {
           // Second player to join - becomes Player 2 (only if this player isn't already player1)
           assignedPlayerNumber = 2
@@ -101,6 +111,7 @@ function App() {
             set(ref(database, `rooms/${roomIdToJoin}/player2`), playerId)
             set(ref(database, `rooms/${roomIdToJoin}/player2Info`), { name: playerName, school: playerSchool })
           }
+          // NEVER log again after initial join
         } else {
           // Room is full with different players
           if (data.player1 && data.player2 && data.player1 !== playerId && data.player2 !== playerId) {
@@ -139,6 +150,10 @@ function App() {
         }
       }
     })
+    
+    // Store unsubscribe function to clean up later
+    roomUnsubscribeRef.current = unsubscribe
+    console.log('✅ Room listener set up and stored')
   }
 
   const startNewGame = () => {
