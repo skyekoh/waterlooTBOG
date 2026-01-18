@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { flushSync } from 'react-dom'
 import { ref, onValue, set, update, push } from 'firebase/database'
 import Cup from './Cup'
 import AudioPlayer from './AudioPlayer'
@@ -249,15 +250,35 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
         const newSunkCount = sunkCount + 1
         const newGuesses = newSunkCount
 
-        console.log(`✅ Sinking cup ${cupToSink + 1} for player ${player}, new sunk count: ${newSunkCount}, new guesses: ${newGuesses}`)
+        console.log(`\n🏀 ========== CUP SUNK ==========`)
+        console.log(`✅ CUP #${cupToSink + 1} SUNK for Player ${player}!`)
+        console.log(`   - Cup index: ${cupToSink} (0-indexed)`)
+        console.log(`   - Cup number: ${cupToSink + 1} (1-indexed)`)
+        console.log(`   - Previous sunk count: ${sunkCount}`)
+        console.log(`   - New sunk count: ${newSunkCount}`)
+        console.log(`   - Previous guesses: ${sunkCount}`)
+        console.log(`   - New guesses: ${newGuesses}`)
+        console.log(`   - Cups array BEFORE: ${JSON.stringify(currentCups)}`)
+        console.log(`   - Cups array AFTER:  ${JSON.stringify(newCups)}`)
+        console.log(`   - Timestamp: ${new Date(now).toISOString()}`)
+        console.log(`🏀 ========== END CUP SUNK ==========\n`)
 
-        // CRITICAL: Update ALL state INSIDE the callback - React will batch them together
-        // All these setState calls happen synchronously and React batches them
-        console.log(`🔄 Updating all state for player ${player}...`)
-        setPlayer1Guesses(newGuesses)              // Update guess count
-        setPlayer1SnippetPlayed(false)             // Reset snippet status
-        setPlayer1GuessUsed(false)                 // Reset guess used status
-        console.log(`✅ ALL STATE UPDATED: cups=${newSunkCount}, guesses=${newGuesses}, snippetPlayed=false, guessUsed=false`)
+        // CRITICAL: Use flushSync to force IMMEDIATE synchronous state updates
+        // This ensures all state updates happen before any Firebase listener can overwrite them
+        console.log(`🔄 Updating all state IMMEDIATELY for player ${player} using flushSync...`)
+        console.log(`   - Setting player1Guesses to: ${newGuesses}`)
+        console.log(`   - Setting player1SnippetPlayed to: false`)
+        console.log(`   - Setting player1GuessUsed to: false`)
+        flushSync(() => {
+          setPlayer1Guesses(newGuesses)              // Update guess count
+          setPlayer1SnippetPlayed(false)             // Reset snippet status
+          setPlayer1GuessUsed(false)                 // Reset guess used status
+        })
+        console.log(`✅ ALL STATE UPDATED SYNCHRONOUSLY:`)
+        console.log(`   - Cups sunk: ${newSunkCount}/6`)
+        console.log(`   - Guesses: ${newGuesses}`)
+        console.log(`   - Snippet played: false`)
+        console.log(`   - Guess used: false`)
         
         setLastSunkCup({ 
           player, 
@@ -346,22 +367,35 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
         const newSunkCount = sunkCount + 1
         const newGuesses = newSunkCount
 
-        console.log(`✅ Calculated new state:`)
-        console.log(`   - newCups: ${JSON.stringify(newCups)}`)
-        console.log(`   - newSunkCount: ${newSunkCount}`)
-        console.log(`   - newGuesses: ${newGuesses}`)
-        console.log(`   - Sinking cup ${cupToSink + 1} for player ${player}`)
+        console.log(`\n🏀 ========== CUP SUNK ==========`)
+        console.log(`✅ CUP #${cupToSink + 1} SUNK for Player ${player}!`)
+        console.log(`   - Cup index: ${cupToSink} (0-indexed)`)
+        console.log(`   - Cup number: ${cupToSink + 1} (1-indexed)`)
+        console.log(`   - Previous sunk count: ${sunkCount}`)
+        console.log(`   - New sunk count: ${newSunkCount}`)
+        console.log(`   - Previous guesses: ${sunkCount}`)
+        console.log(`   - New guesses: ${newGuesses}`)
+        console.log(`   - Cups array BEFORE: ${JSON.stringify(currentCups)}`)
+        console.log(`   - Cups array AFTER:  ${JSON.stringify(newCups)}`)
+        console.log(`   - Timestamp: ${new Date(now).toISOString()}`)
+        console.log(`🏀 ========== END CUP SUNK ==========\n`)
 
-        // CRITICAL: Update ALL state INSIDE the callback - React will batch them together
-        // All these setState calls happen synchronously and React batches them
-        console.log(`\n🔄 Calling setState for all related state...`)
-        console.log(`   - setPlayer2Guesses(${newGuesses})`)
-        setPlayer2Guesses(newGuesses)              // Update guess count
-        console.log(`   - setPlayer2SnippetPlayed(false)`)
-        setPlayer2SnippetPlayed(false)             // Reset snippet status
-        console.log(`   - setPlayer2GuessUsed(false)`)
-        setPlayer2GuessUsed(false)                 // Reset guess used status
-        console.log(`✅ All setState calls completed (React will batch these)`)
+        // CRITICAL: Use flushSync to force IMMEDIATE synchronous state updates
+        // This ensures all state updates happen before any Firebase listener can overwrite them
+        console.log(`🔄 Updating all state IMMEDIATELY for player ${player} using flushSync...`)
+        console.log(`   - Setting player2Guesses to: ${newGuesses}`)
+        console.log(`   - Setting player2SnippetPlayed to: false`)
+        console.log(`   - Setting player2GuessUsed to: false`)
+        flushSync(() => {
+          setPlayer2Guesses(newGuesses)              // Update guess count
+          setPlayer2SnippetPlayed(false)             // Reset snippet status
+          setPlayer2GuessUsed(false)                 // Reset guess used status
+        })
+        console.log(`✅ ALL STATE UPDATED SYNCHRONOUSLY:`)
+        console.log(`   - Cups sunk: ${newSunkCount}/6`)
+        console.log(`   - Guesses: ${newGuesses}`)
+        console.log(`   - Snippet played: false`)
+        console.log(`   - Guess used: false`)
         
         console.log(`   - Setting lastSunkCup`)
         setLastSunkCup({ 

@@ -37,6 +37,7 @@ function App() {
   const [showLeaderboard, setShowLeaderboard] = useState(false)
   const [playerInfo, setPlayerInfo] = useState({ name: '', school: '', playerNumber: null })
   const hasJoinedRoomRef = useRef(false) // Track if we've already joined the room (to prevent repeated logs)
+  const previousRoomIdRef = useRef(null) // Track previous room ID to detect room changes
 
   // Generate or load player ID
   useEffect(() => {
@@ -52,14 +53,18 @@ function App() {
 
   const joinRoom = (roomIdToJoin, playerName, playerSchool, playerNumber = null) => {
     const roomRef = ref(database, `rooms/${roomIdToJoin}`)
-    hasJoinedRoomRef.current = false // Reset when joining a new room
+    
+    // Only reset hasJoinedRoomRef if we're joining a DIFFERENT room
+    if (previousRoomIdRef.current !== roomIdToJoin) {
+      hasJoinedRoomRef.current = false
+      previousRoomIdRef.current = roomIdToJoin
+    }
     
     // Listen to room changes (including game state)
     onValue(roomRef, (snapshot) => {
       const data = snapshot.val()
       if (data) {
         let assignedPlayerNumber = null
-        let isNewJoin = false
         
         // First, check if this player is already in the room
         if (data.player1 === playerId) {
@@ -69,6 +74,7 @@ function App() {
             console.log('🎮 Player 1 joining room:', { roomId: roomIdToJoin, playerId, playerName, playerSchool })
             hasJoinedRoomRef.current = true
           }
+          // Don't log anything else - we're already in the room, just updating state
         } else if (data.player2 === playerId) {
           // This is player 2 - check if we've already logged this join
           assignedPlayerNumber = 2
@@ -76,22 +82,25 @@ function App() {
             console.log('🎮 Player 2 joining room:', { roomId: roomIdToJoin, playerId, playerName, playerSchool })
             hasJoinedRoomRef.current = true
           }
+          // Don't log anything else - we're already in the room, just updating state
         } else if (!data.player1) {
           // First player to join - becomes Player 1
           assignedPlayerNumber = 1
-          isNewJoin = true
-          console.log('🎮 Player 1 joining room:', { roomId: roomIdToJoin, playerId, playerName, playerSchool })
-          hasJoinedRoomRef.current = true
-          set(ref(database, `rooms/${roomIdToJoin}/player1`), playerId)
-          set(ref(database, `rooms/${roomIdToJoin}/player1Info`), { name: playerName, school: playerSchool })
+          if (!hasJoinedRoomRef.current) {
+            console.log('🎮 Player 1 joining room:', { roomId: roomIdToJoin, playerId, playerName, playerSchool })
+            hasJoinedRoomRef.current = true
+            set(ref(database, `rooms/${roomIdToJoin}/player1`), playerId)
+            set(ref(database, `rooms/${roomIdToJoin}/player1Info`), { name: playerName, school: playerSchool })
+          }
         } else if (!data.player2) {
           // Second player to join - becomes Player 2 (only if this player isn't already player1)
           assignedPlayerNumber = 2
-          isNewJoin = true
-          console.log('🎮 Player 2 joining room:', { roomId: roomIdToJoin, playerId, playerName, playerSchool })
-          hasJoinedRoomRef.current = true
-          set(ref(database, `rooms/${roomIdToJoin}/player2`), playerId)
-          set(ref(database, `rooms/${roomIdToJoin}/player2Info`), { name: playerName, school: playerSchool })
+          if (!hasJoinedRoomRef.current) {
+            console.log('🎮 Player 2 joining room:', { roomId: roomIdToJoin, playerId, playerName, playerSchool })
+            hasJoinedRoomRef.current = true
+            set(ref(database, `rooms/${roomIdToJoin}/player2`), playerId)
+            set(ref(database, `rooms/${roomIdToJoin}/player2Info`), { name: playerName, school: playerSchool })
+          }
         } else {
           // Room is full with different players
           if (data.player1 && data.player2 && data.player1 !== playerId && data.player2 !== playerId) {
@@ -104,24 +113,30 @@ function App() {
           return
         }
         
-        // Set room info
-        setRoomId(roomIdToJoin)
-        setGameId(roomIdToJoin)
-        setPlayerInfo({ 
-          name: data[`player${assignedPlayerNumber}Info`]?.name || playerName, 
-          school: data[`player${assignedPlayerNumber}Info`]?.school || playerSchool, 
-          playerNumber: assignedPlayerNumber 
-        })
-        
-        // Update game state based on Firebase
-        if (data.gameState === 'playing') {
-          setGameState('playing')
-        } else {
-          setGameState('waiting')
+        // Only update state if we have a valid assigned player number
+        // This prevents updating state on every Firebase change when we're already in the room
+        if (assignedPlayerNumber) {
+          // Set room info (only update if needed to avoid unnecessary re-renders)
+          setRoomId(roomIdToJoin)
+          setGameId(roomIdToJoin)
+          setPlayerInfo({ 
+            name: data[`player${assignedPlayerNumber}Info`]?.name || playerName, 
+            school: data[`player${assignedPlayerNumber}Info`]?.school || playerSchool, 
+            playerNumber: assignedPlayerNumber 
+          })
+          
+          // Update game state based on Firebase
+          if (data.gameState === 'playing') {
+            setGameState('playing')
+          } else {
+            setGameState('waiting')
+          }
         }
       } else {
         // Room doesn't exist
-        alert('Room not found. Please check the Room ID or ask the Game Master to create it.')
+        if (!hasJoinedRoomRef.current) {
+          alert('Room not found. Please check the Room ID or ask the Game Master to create it.')
+        }
       }
     })
   }
