@@ -24,6 +24,8 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
   const gameAreaRef = useRef(null)
   const audioPlayerRef = useRef(null)
   const lastCupCountRef = useRef({ player1: 0, player2: 0 }) // Track previous cup counts
+  const lastCupSinkTimeRef = useRef({ player1: 0, player2: 0 }) // Debounce: track last cup sink time per player
+  const isProcessingCupSinkRef = useRef({ player1: false, player2: false }) // Prevent concurrent processing
 
   // Determine which player this instance is (1 or 2)
   const isPlayer1 = useRef(playerInfo.playerNumber === 1)
@@ -116,72 +118,157 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
 
   // Handle cup sink from hardware - player hit any cup
   const handleCupSink = (player) => {
-    if (gameStatus !== 'playing') return
-    
-    // Get current cups for this player
-    const currentCups = player === 1 ? player1Cups : player2Cups
-    
-    // Count how many cups are already sunk
-    const sunkCount = currentCups.filter(cup => cup).length
-    
-    // Check if all cups are already sunk
-    if (sunkCount >= 6) {
-      console.log(`All cups already sunk for player ${player}`)
-      return
-    }
-
-    // Find the first unsunk cup and mark it as sunk
-    const newCups = [...currentCups]
-    const cupToSink = newCups.findIndex(cup => !cup)
-    
-    if (cupToSink === -1) {
-      console.log(`No available cups to sink for player ${player}`)
+    if (gameStatus !== 'playing') {
+      console.log('⚠️ Game not playing, ignoring cup sink')
       return
     }
     
-    newCups[cupToSink] = true
-    const newSunkCount = sunkCount + 1
-    // Guesses should always equal the number of cups sunk (increment with each cup)
-    const newGuesses = newSunkCount
-
-    // Update local state
+    const playerKey = player === 1 ? 'player1' : 'player2'
+    const now = Date.now()
+    
+    // Debounce: Prevent processing multiple signals within 500ms
+    if (now - lastCupSinkTimeRef.current[playerKey] < 500) {
+      console.log(`⚠️ Debouncing cup sink for player ${player} (too soon after last sink)`)
+      return
+    }
+    
+    // Prevent concurrent processing for the same player
+    if (isProcessingCupSinkRef.current[playerKey]) {
+      console.log(`⚠️ Already processing cup sink for player ${player}`)
+      return
+    }
+    
+    isProcessingCupSinkRef.current[playerKey] = true
+    lastCupSinkTimeRef.current[playerKey] = now
+    
+    // Use functional state updates to ensure we have the latest state
     if (player === 1) {
-      setPlayer1Cups(newCups)
-      setPlayer1Guesses(newGuesses)
-      // Don't reset guessUsed here - guess is only available after snippet is played
-      setPlayer1SnippetPlayed(false) // Reset snippet status - new cup sunk allows snippet to be played
-    } else {
-      setPlayer2Cups(newCups)
-      setPlayer2Guesses(newGuesses)
-      // Don't reset guessUsed here - guess is only available after snippet is played
-      setPlayer2SnippetPlayed(false) // Reset snippet status - new cup sunk allows snippet to be played
-    }
-    
-    setLastSunkCup({ 
-      player, 
-      cupIndex: cupToSink, 
-      snippetNumber: newSunkCount,
-      timestamp: Date.now() 
-    })
+      setPlayer1Cups(currentCups => {
+        // Count how many cups are already sunk
+        const sunkCount = currentCups.filter(cup => cup).length
+        
+        console.log(`🎯 Processing cup sink for player ${player}, current sunk count: ${sunkCount}`)
+        
+        // Check if all cups are already sunk
+        if (sunkCount >= 6) {
+          console.log(`⚠️ All cups already sunk for player ${player}`)
+          isProcessingCupSinkRef.current[playerKey] = false
+          return currentCups
+        }
 
-    // Update Firebase
-    const gameRef = ref(database, `rooms/${gameId}`)
-    const cupsKey = player === 1 ? 'player1Cups' : 'player2Cups'
-    const guessesKey = player === 1 ? 'player1Guesses' : 'player2Guesses'
-    const guessUsedKey = player === 1 ? 'player1GuessUsed' : 'player2GuessUsed'
-    const snippetPlayedKey = player === 1 ? 'player1SnippetPlayed' : 'player2SnippetPlayed'
-    update(gameRef, {
-      [cupsKey]: newCups,
-      [guessesKey]: newGuesses,
-      // Don't reset guessUsed - guess is only available after snippet is played
-      [snippetPlayedKey]: false, // Reset snippet status in Firebase too
-      lastSunkCup: { 
-        player, 
-        cupIndex: cupToSink, 
-        snippetNumber: newSunkCount,
-        timestamp: Date.now() 
-      }
-    })
+        // Find the first unsunk cup and mark it as sunk
+        const newCups = [...currentCups]
+        const cupToSink = newCups.findIndex(cup => !cup)
+        
+        if (cupToSink === -1) {
+          console.log(`⚠️ No available cups to sink for player ${player}`)
+          isProcessingCupSinkRef.current[playerKey] = false
+          return currentCups
+        }
+        
+        newCups[cupToSink] = true
+        const newSunkCount = sunkCount + 1
+        const newGuesses = newSunkCount
+
+        console.log(`✅ Sinking cup ${cupToSink + 1} for player ${player}, new sunk count: ${newSunkCount}`)
+
+        // Update other state
+        setPlayer1Guesses(newGuesses)
+        setPlayer1SnippetPlayed(false)
+        
+        setLastSunkCup({ 
+          player, 
+          cupIndex: cupToSink, 
+          snippetNumber: newSunkCount,
+          timestamp: now
+        })
+
+        // Update Firebase
+        const gameRef = ref(database, `rooms/${gameId}`)
+        update(gameRef, {
+          player1Cups: newCups,
+          player1Guesses: newGuesses,
+          player1SnippetPlayed: false,
+          lastSunkCup: { 
+            player, 
+            cupIndex: cupToSink, 
+            snippetNumber: newSunkCount,
+            timestamp: now
+          }
+        }).then(() => {
+          console.log(`✅ Firebase updated for player ${player} cup sink`)
+          isProcessingCupSinkRef.current[playerKey] = false
+        }).catch((error) => {
+          console.error(`❌ Error updating Firebase for player ${player}:`, error)
+          isProcessingCupSinkRef.current[playerKey] = false
+        })
+        
+        return newCups
+      })
+    } else {
+      setPlayer2Cups(currentCups => {
+        // Count how many cups are already sunk
+        const sunkCount = currentCups.filter(cup => cup).length
+        
+        console.log(`🎯 Processing cup sink for player ${player}, current sunk count: ${sunkCount}`)
+        
+        // Check if all cups are already sunk
+        if (sunkCount >= 6) {
+          console.log(`⚠️ All cups already sunk for player ${player}`)
+          isProcessingCupSinkRef.current[playerKey] = false
+          return currentCups
+        }
+
+        // Find the first unsunk cup and mark it as sunk
+        const newCups = [...currentCups]
+        const cupToSink = newCups.findIndex(cup => !cup)
+        
+        if (cupToSink === -1) {
+          console.log(`⚠️ No available cups to sink for player ${player}`)
+          isProcessingCupSinkRef.current[playerKey] = false
+          return currentCups
+        }
+        
+        newCups[cupToSink] = true
+        const newSunkCount = sunkCount + 1
+        const newGuesses = newSunkCount
+
+        console.log(`✅ Sinking cup ${cupToSink + 1} for player ${player}, new sunk count: ${newSunkCount}`)
+
+        // Update other state
+        setPlayer2Guesses(newGuesses)
+        setPlayer2SnippetPlayed(false)
+        
+        setLastSunkCup({ 
+          player, 
+          cupIndex: cupToSink, 
+          snippetNumber: newSunkCount,
+          timestamp: now
+        })
+
+        // Update Firebase
+        const gameRef = ref(database, `rooms/${gameId}`)
+        update(gameRef, {
+          player2Cups: newCups,
+          player2Guesses: newGuesses,
+          player2SnippetPlayed: false,
+          lastSunkCup: { 
+            player, 
+            cupIndex: cupToSink, 
+            snippetNumber: newSunkCount,
+            timestamp: now
+          }
+        }).then(() => {
+          console.log(`✅ Firebase updated for player ${player} cup sink`)
+          isProcessingCupSinkRef.current[playerKey] = false
+        }).catch((error) => {
+          console.error(`❌ Error updating Firebase for player ${player}:`, error)
+          isProcessingCupSinkRef.current[playerKey] = false
+        })
+        
+        return newCups
+      })
+    }
   }
 
   const handleCorrectGuess = (player) => {

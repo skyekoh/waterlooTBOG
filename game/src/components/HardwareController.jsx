@@ -134,23 +134,23 @@ function HardwareController({ onCupSink, playerNumber }) {
 
   const processSerialData = (data) => {
     try {
-      // Match the working example EXACTLY:
-      // if (value) {
-      //   if (value.includes("1")) {
-      //     // trigger cup hit
-      //   }
-      // }
+      // Match the working example: check if value contains "1"
+      // Your Pico sends "1\n". We check if the incoming string contains "1"
+      // Handle multiple "1"s in one read (e.g., "1\n1\n" from multiple rapid triggers)
       
       // DEBUG: Log what we received
       console.log('📥 Received value:', data, 'Type:', typeof data)
       
-      // Check if value contains "1" (exactly like the working example)
-      // Your Pico sends "1\n". We check if the incoming string contains "1"
       if (data && data.includes("1")) {
+        // Count how many "1"s are in this value (each represents a cup hit)
+        // Split by "1" and count - but only trigger once per read to avoid rapid duplicate triggers
+        // The debouncing in GameBoard will handle rapid successive reads
         console.log('✅ Cup hit detected! Value contains "1":', data)
         setStatus(`Ball sunk! Player ${playerNumber} hit a cup!`)
         
-        // Trigger callback - exactly like the working example increments counter
+        // Trigger callback once per read (GameBoard has debouncing to prevent rapid duplicates)
+        // If multiple "1"s are in one read, we'll trigger once - the firmware's own debouncing
+        // should prevent multiple triggers from the same physical cup hit
         if (onCupSink) {
           onCupSink(playerNumber)
         }
