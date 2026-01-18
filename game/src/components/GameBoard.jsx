@@ -27,6 +27,7 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
   const lastCupSinkTimeRef = useRef({ player1: 0, player2: 0 }) // Debounce: track last cup sink time per player
   const isProcessingCupSinkRef = useRef({ player1: false, player2: false }) // Prevent concurrent processing
   const ignoreFirebaseUpdatesRef = useRef({ player1: false, player2: false }) // Prevent Firebase listener from overwriting our optimistic updates
+  const pendingCupSinkRef = useRef({ player1: null, player2: null }) // Store pending cup sink data to update state outside callback
 
   // Determine which player this instance is (1 or 2)
   const isPlayer1 = useRef(playerInfo.playerNumber === 1)
@@ -54,6 +55,7 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
           // This prevents Firebase listener from overwriting our optimistic local updates
           if (!ignoreFirebaseUpdatesRef.current.player1) {
             const currentCupCount = data.player1Cups.filter(cup => cup).length
+            console.log(`📥 Firebase listener: Updating player1 from Firebase - cupCount=${currentCupCount}, ignoreFlag=${ignoreFirebaseUpdatesRef.current.player1}`)
             // Reset snippet status if cup count increased (new cup sunk)
             // Don't reset guessUsed - guess is only available after snippet is played
             if (currentCupCount > lastCupCountRef.current.player1) {
@@ -63,6 +65,8 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
             setPlayer1Cups(data.player1Cups)
             // Ensure guesses match cups sunk count (guesses increment with each cup sunk)
             setPlayer1Guesses(currentCupCount)
+          } else {
+            console.log(`🚫 Firebase listener: SKIPPING player1 update - ignoreFlag is true`)
           }
         }
         if (data.player2Cups) {
@@ -70,6 +74,7 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
           // This prevents Firebase listener from overwriting our optimistic local updates
           if (!ignoreFirebaseUpdatesRef.current.player2) {
             const currentCupCount = data.player2Cups.filter(cup => cup).length
+            console.log(`📥 Firebase listener: Updating player2 from Firebase - cupCount=${currentCupCount}, ignoreFlag=${ignoreFirebaseUpdatesRef.current.player2}`)
             // Reset snippet status if cup count increased (new cup sunk)
             // Don't reset guessUsed - guess is only available after snippet is played
             if (currentCupCount > lastCupCountRef.current.player2) {
@@ -79,18 +84,42 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
             setPlayer2Cups(data.player2Cups)
             // Ensure guesses match cups sunk count (guesses increment with each cup sunk)
             setPlayer2Guesses(currentCupCount)
+          } else {
+            console.log(`🚫 Firebase listener: SKIPPING player2 update - ignoreFlag is true`)
           }
         }
         // Only update these if not ignoring Firebase updates (prevent overwriting our own optimistic updates)
         if (!ignoreFirebaseUpdatesRef.current.player1) {
-          if (data.player1SnippetPlayed !== undefined) setPlayer1SnippetPlayed(data.player1SnippetPlayed)
-          if (data.player1Guesses !== undefined) setPlayer1Guesses(data.player1Guesses)
-          if (data.player1GuessUsed !== undefined) setPlayer1GuessUsed(data.player1GuessUsed)
+          if (data.player1SnippetPlayed !== undefined) {
+            console.log(`📥 Firebase listener: Updating player1SnippetPlayed=${data.player1SnippetPlayed}`)
+            setPlayer1SnippetPlayed(data.player1SnippetPlayed)
+          }
+          if (data.player1Guesses !== undefined) {
+            console.log(`📥 Firebase listener: Updating player1Guesses=${data.player1Guesses}`)
+            setPlayer1Guesses(data.player1Guesses)
+          }
+          if (data.player1GuessUsed !== undefined) {
+            console.log(`📥 Firebase listener: Updating player1GuessUsed=${data.player1GuessUsed}`)
+            setPlayer1GuessUsed(data.player1GuessUsed)
+          }
+        } else {
+          console.log(`🚫 Firebase listener: SKIPPING player1 state updates - ignoreFlag is true`)
         }
         if (!ignoreFirebaseUpdatesRef.current.player2) {
-          if (data.player2SnippetPlayed !== undefined) setPlayer2SnippetPlayed(data.player2SnippetPlayed)
-          if (data.player2Guesses !== undefined) setPlayer2Guesses(data.player2Guesses)
-          if (data.player2GuessUsed !== undefined) setPlayer2GuessUsed(data.player2GuessUsed)
+          if (data.player2SnippetPlayed !== undefined) {
+            console.log(`📥 Firebase listener: Updating player2SnippetPlayed=${data.player2SnippetPlayed}`)
+            setPlayer2SnippetPlayed(data.player2SnippetPlayed)
+          }
+          if (data.player2Guesses !== undefined) {
+            console.log(`📥 Firebase listener: Updating player2Guesses=${data.player2Guesses}`)
+            setPlayer2Guesses(data.player2Guesses)
+          }
+          if (data.player2GuessUsed !== undefined) {
+            console.log(`📥 Firebase listener: Updating player2GuessUsed=${data.player2GuessUsed}`)
+            setPlayer2GuessUsed(data.player2GuessUsed)
+          }
+        } else {
+          console.log(`🚫 Firebase listener: SKIPPING player2 state updates - ignoreFlag is true`)
         }
         if (data.currentSongIndex !== undefined && data.currentSongIndex !== null) {
           setCurrentSongIndex(data.currentSongIndex)
@@ -132,6 +161,31 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
 
   // Handle cup sink from hardware - player hit any cup
   const handleCupSink = (player) => {
+    console.log(`\n🔥 ========== handleCupSink CALLED for player ${player} ==========`)
+    console.log(`📊 Current state before processing:`)
+    console.log(`   - gameStatus: ${gameStatus}`)
+    if (player === 1) {
+      const currentCups = player1Cups
+      const currentGuesses = player1Guesses
+      const currentSnippetPlayed = player1SnippetPlayed
+      const currentGuessUsed = player1GuessUsed
+      const sunkCount = currentCups.filter(cup => cup).length
+      console.log(`   - player1Cups: ${JSON.stringify(currentCups)}, sunkCount: ${sunkCount}`)
+      console.log(`   - player1Guesses: ${currentGuesses}`)
+      console.log(`   - player1SnippetPlayed: ${currentSnippetPlayed}`)
+      console.log(`   - player1GuessUsed: ${currentGuessUsed}`)
+    } else {
+      const currentCups = player2Cups
+      const currentGuesses = player2Guesses
+      const currentSnippetPlayed = player2SnippetPlayed
+      const currentGuessUsed = player2GuessUsed
+      const sunkCount = currentCups.filter(cup => cup).length
+      console.log(`   - player2Cups: ${JSON.stringify(currentCups)}, sunkCount: ${sunkCount}`)
+      console.log(`   - player2Guesses: ${currentGuesses}`)
+      console.log(`   - player2SnippetPlayed: ${currentSnippetPlayed}`)
+      console.log(`   - player2GuessUsed: ${currentGuessUsed}`)
+    }
+    
     if (gameStatus !== 'playing') {
       console.log('⚠️ Game not playing, ignoring cup sink')
       return
@@ -139,10 +193,11 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
     
     const playerKey = player === 1 ? 'player1' : 'player2'
     const now = Date.now()
+    const timeSinceLastSink = now - lastCupSinkTimeRef.current[playerKey]
     
     // Debounce: Prevent processing multiple signals within 500ms
-    if (now - lastCupSinkTimeRef.current[playerKey] < 500) {
-      console.log(`⚠️ Debouncing cup sink for player ${player} (too soon after last sink)`)
+    if (timeSinceLastSink < 500) {
+      console.log(`⚠️ Debouncing cup sink for player ${player} (${timeSinceLastSink}ms since last sink, need 500ms)`)
       return
     }
     
@@ -152,16 +207,19 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
       return
     }
     
+    console.log(`✅ Passed all checks - proceeding with cup sink`)
     isProcessingCupSinkRef.current[playerKey] = true
     lastCupSinkTimeRef.current[playerKey] = now
     
     // CRITICAL: Set ignore flag FIRST (before any state updates or Firebase calls)
     // This prevents Firebase listener from overwriting our optimistic updates
+    console.log(`🔒 Setting ignoreFirebaseUpdatesRef.current[${playerKey}] = true`)
     ignoreFirebaseUpdatesRef.current[playerKey] = true
+    console.log(`   - ignoreFirebaseUpdatesRef.current: ${JSON.stringify(ignoreFirebaseUpdatesRef.current)}`)
     
-    // Use functional state updates for cups to ensure we have the latest state
-    // Then update all other state directly for immediate UI updates
+    // Use functional state updates to get the latest state, then update ALL state synchronously
     if (player === 1) {
+      // Get latest state using functional update - calculate what needs to change
       setPlayer1Cups(currentCups => {
         // Count how many cups are already sunk (using latest state)
         const sunkCount = currentCups.filter(cup => cup).length
@@ -193,12 +251,13 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
 
         console.log(`✅ Sinking cup ${cupToSink + 1} for player ${player}, new sunk count: ${newSunkCount}, new guesses: ${newGuesses}`)
 
-        // CRITICAL: Update ALL other state IMMEDIATELY (optimistic updates)
-        // These happen synchronously during this execution - React will batch them with the cups update
+        // CRITICAL: Update ALL state INSIDE the callback - React will batch them together
+        // All these setState calls happen synchronously and React batches them
+        console.log(`🔄 Updating all state for player ${player}...`)
         setPlayer1Guesses(newGuesses)              // Update guess count
         setPlayer1SnippetPlayed(false)             // Reset snippet status
         setPlayer1GuessUsed(false)                 // Reset guess used status
-        console.log(`✅ State updated: cups=${newSunkCount}, guesses=${newGuesses}, snippetPlayed=false, guessUsed=false`)
+        console.log(`✅ ALL STATE UPDATED: cups=${newSunkCount}, guesses=${newGuesses}, snippetPlayed=false, guessUsed=false`)
         
         setLastSunkCup({ 
           player, 
@@ -208,8 +267,13 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
         })
 
         // Update Firebase (this will sync to other players and Game Master)
+        // Store values in ref so Firebase update can access them
+        pendingCupSinkRef.current.player1 = { newCups, newGuesses, newSunkCount, cupToSink }
+        console.log(`   - Stored in pendingCupSinkRef.current.player1`)
+        
+        console.log(`\n🌐 Sending Firebase update...`)
         const gameRef = ref(database, `rooms/${gameId}`)
-        update(gameRef, {
+        const firebaseUpdate = {
           player1Cups: newCups,
           player1Guesses: newGuesses,
           player1SnippetPlayed: false,
@@ -220,28 +284,42 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
             snippetNumber: newSunkCount,
             timestamp: now
           }
-        }).then(() => {
-          console.log(`✅ Firebase updated for player ${player} cup sink`)
+        }
+        console.log(`   - Firebase update payload:`, JSON.stringify(firebaseUpdate, null, 2))
+        console.log(`   - ignoreFirebaseUpdatesRef.current.player1 BEFORE update: ${ignoreFirebaseUpdatesRef.current.player1}`)
+        
+        update(gameRef, firebaseUpdate).then(() => {
+          console.log(`✅ Firebase update SUCCESS for player ${player}`)
+          console.log(`   - ignoreFirebaseUpdatesRef.current.player1 AFTER update: ${ignoreFirebaseUpdatesRef.current.player1}`)
           // Re-enable Firebase updates after our update completes
           setTimeout(() => {
+            console.log(`\n🔓 Re-enabling Firebase updates for player ${player} (500ms after Firebase update)`)
             ignoreFirebaseUpdatesRef.current[playerKey] = false
-            console.log(`✅ Re-enabled Firebase updates for player ${player}`)
-          }, 200) // Increased to 200ms to ensure Firebase listener has processed
-          isProcessingCupSinkRef.current[playerKey] = false
+            console.log(`   - ignoreFirebaseUpdatesRef.current: ${JSON.stringify(ignoreFirebaseUpdatesRef.current)}`)
+            isProcessingCupSinkRef.current[playerKey] = false
+            console.log(`   - isProcessingCupSinkRef.current: ${JSON.stringify(isProcessingCupSinkRef.current)}`)
+          }, 500) // Increased to 500ms to ensure Firebase listener has processed
         }).catch((error) => {
-          console.error(`❌ Error updating Firebase for player ${player}:`, error)
+          console.error(`❌ Firebase update ERROR for player ${player}:`, error)
+          console.error(`   - Error details:`, error)
           ignoreFirebaseUpdatesRef.current[playerKey] = false
           isProcessingCupSinkRef.current[playerKey] = false
         })
         
+        console.log(`✅ Returning newCups from callback: ${JSON.stringify(newCups)}`)
         return newCups  // Return new cups array for immediate UI update
       })
+      console.log(`✅ setPlayer1Cups call completed (callback will execute)`)
     } else {
+      console.log(`\n📝 Starting functional update for player2Cups`)
       setPlayer2Cups(currentCups => {
         // Count how many cups are already sunk (using latest state)
         const sunkCount = currentCups.filter(cup => cup).length
         
-        console.log(`🎯 Processing cup sink for player ${player}, current sunk count: ${sunkCount}`)
+        console.log(`🎯 Inside setPlayer2Cups callback:`)
+        console.log(`   - currentCups: ${JSON.stringify(currentCups)}`)
+        console.log(`   - sunkCount: ${sunkCount}`)
+        console.log(`   - ignoreFirebaseUpdatesRef.current.player2: ${ignoreFirebaseUpdatesRef.current.player2}`)
         
         // Check if all cups are already sunk
         if (sunkCount >= 6) {
@@ -255,6 +333,8 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
         const newCups = [...currentCups]
         const cupToSink = newCups.findIndex(cup => !cup)
         
+        console.log(`   - cupToSink index: ${cupToSink}`)
+        
         if (cupToSink === -1) {
           console.log(`⚠️ No available cups to sink for player ${player}`)
           ignoreFirebaseUpdatesRef.current[playerKey] = false
@@ -266,15 +346,24 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
         const newSunkCount = sunkCount + 1
         const newGuesses = newSunkCount
 
-        console.log(`✅ Sinking cup ${cupToSink + 1} for player ${player}, new sunk count: ${newSunkCount}, new guesses: ${newGuesses}`)
+        console.log(`✅ Calculated new state:`)
+        console.log(`   - newCups: ${JSON.stringify(newCups)}`)
+        console.log(`   - newSunkCount: ${newSunkCount}`)
+        console.log(`   - newGuesses: ${newGuesses}`)
+        console.log(`   - Sinking cup ${cupToSink + 1} for player ${player}`)
 
-        // CRITICAL: Update ALL other state IMMEDIATELY (optimistic updates)
-        // These happen synchronously during this execution - React will batch them with the cups update
+        // CRITICAL: Update ALL state INSIDE the callback - React will batch them together
+        // All these setState calls happen synchronously and React batches them
+        console.log(`\n🔄 Calling setState for all related state...`)
+        console.log(`   - setPlayer2Guesses(${newGuesses})`)
         setPlayer2Guesses(newGuesses)              // Update guess count
+        console.log(`   - setPlayer2SnippetPlayed(false)`)
         setPlayer2SnippetPlayed(false)             // Reset snippet status
+        console.log(`   - setPlayer2GuessUsed(false)`)
         setPlayer2GuessUsed(false)                 // Reset guess used status
-        console.log(`✅ State updated: cups=${newSunkCount}, guesses=${newGuesses}, snippetPlayed=false, guessUsed=false`)
+        console.log(`✅ All setState calls completed (React will batch these)`)
         
+        console.log(`   - Setting lastSunkCup`)
         setLastSunkCup({ 
           player, 
           cupIndex: cupToSink, 
@@ -283,8 +372,13 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
         })
 
         // Update Firebase (this will sync to other players and Game Master)
+        // Store values in ref so Firebase update can access them
+        pendingCupSinkRef.current.player2 = { newCups, newGuesses, newSunkCount, cupToSink }
+        console.log(`   - Stored in pendingCupSinkRef.current.player2`)
+        
+        console.log(`\n🌐 Sending Firebase update...`)
         const gameRef = ref(database, `rooms/${gameId}`)
-        update(gameRef, {
+        const firebaseUpdate = {
           player2Cups: newCups,
           player2Guesses: newGuesses,
           player2SnippetPlayed: false,
@@ -295,23 +389,34 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
             snippetNumber: newSunkCount,
             timestamp: now
           }
-        }).then(() => {
-          console.log(`✅ Firebase updated for player ${player} cup sink`)
+        }
+        console.log(`   - Firebase update payload:`, JSON.stringify(firebaseUpdate, null, 2))
+        console.log(`   - ignoreFirebaseUpdatesRef.current.player2 BEFORE update: ${ignoreFirebaseUpdatesRef.current.player2}`)
+        
+        update(gameRef, firebaseUpdate).then(() => {
+          console.log(`✅ Firebase update SUCCESS for player ${player}`)
+          console.log(`   - ignoreFirebaseUpdatesRef.current.player2 AFTER update: ${ignoreFirebaseUpdatesRef.current.player2}`)
           // Re-enable Firebase updates after our update completes
           setTimeout(() => {
+            console.log(`\n🔓 Re-enabling Firebase updates for player ${player} (500ms after Firebase update)`)
             ignoreFirebaseUpdatesRef.current[playerKey] = false
-            console.log(`✅ Re-enabled Firebase updates for player ${player}`)
-          }, 200) // Increased to 200ms to ensure Firebase listener has processed
-          isProcessingCupSinkRef.current[playerKey] = false
+            console.log(`   - ignoreFirebaseUpdatesRef.current: ${JSON.stringify(ignoreFirebaseUpdatesRef.current)}`)
+            isProcessingCupSinkRef.current[playerKey] = false
+            console.log(`   - isProcessingCupSinkRef.current: ${JSON.stringify(isProcessingCupSinkRef.current)}`)
+          }, 500) // Increased to 500ms to ensure Firebase listener has processed
         }).catch((error) => {
-          console.error(`❌ Error updating Firebase for player ${player}:`, error)
+          console.error(`❌ Firebase update ERROR for player ${player}:`, error)
+          console.error(`   - Error details:`, error)
           ignoreFirebaseUpdatesRef.current[playerKey] = false
           isProcessingCupSinkRef.current[playerKey] = false
         })
         
+        console.log(`✅ Returning newCups from callback: ${JSON.stringify(newCups)}`)
         return newCups  // Return new cups array for immediate UI update
       })
+      console.log(`✅ setPlayer2Cups call completed (callback will execute)`)
     }
+    console.log(`🔥 ========== handleCupSink COMPLETED for player ${player} ==========\n`)
   }
 
   const handleCorrectGuess = (player) => {
