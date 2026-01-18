@@ -20,10 +20,36 @@ function GuessInput({ song, onSubmit, enabled, guessUsed = false }) {
     const normalizedGuess = normalizeString(guess)
     const normalizedTitle = normalizeString(song.title)
     
-    const isCorrect = 
-      normalizedGuess === normalizedTitle ||
-      normalizedTitle.includes(normalizedGuess) ||
-      normalizedGuess.includes(normalizedTitle)
+    // STRICT matching rules
+    const MIN_GUESS_LENGTH = 4 // Minimum 4 characters required
+    const MIN_MATCH_PERCENTAGE = 0.75 // Must match at least 75% of title length
+    
+    // Exact match (always correct)
+    let isCorrect = normalizedGuess === normalizedTitle
+    
+    // Substring matching - VERY STRICT requirements
+    if (!isCorrect) {
+      const guessLength = normalizedGuess.length
+      const titleLength = normalizedTitle.length
+      
+      // Calculate minimum required length (must be at least MIN_GUESS_LENGTH OR 75% of title, whichever is larger)
+      const minRequiredLength = Math.max(MIN_GUESS_LENGTH, Math.ceil(titleLength * MIN_MATCH_PERCENTAGE))
+      
+      // Only allow substring matching if:
+      // 1. Guess meets minimum length requirement (at least 4 chars AND 75% of title length)
+      // 2. Title contains the guess as a substring
+      // 3. OR guess starts with the title (allowing for extra characters like "dynamite bts")
+      if (guessLength >= minRequiredLength) {
+        // Check if title contains the guess (for partial matches like "dynam" matching "dynamite")
+        if (normalizedTitle.includes(normalizedGuess)) {
+          isCorrect = true
+        }
+        // Check if guess starts with the title (allowing extra words after, like "dynamite bts")
+        else if (normalizedGuess.startsWith(normalizedTitle)) {
+          isCorrect = true
+        }
+      }
+    }
 
     setTimeout(() => {
       setResult(isCorrect ? 'correct' : 'incorrect')
