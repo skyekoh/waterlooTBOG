@@ -182,6 +182,10 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
 
         console.log(`✅ Sinking cup ${cupToSink + 1} for player ${player}, new sunk count: ${newSunkCount}`)
 
+        // CRITICAL: Set flag FIRST to prevent Firebase listener from overwriting our updates
+        // This must happen before any state updates to catch listener callbacks that might fire
+        ignoreFirebaseUpdatesRef.current.player1 = true
+        
         // IMMEDIATELY update ALL related state (optimistic updates)
         // This ensures UI updates instantly, before Firebase sync
         setPlayer1Guesses(newGuesses)        // Update guess count
@@ -194,9 +198,6 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
           snippetNumber: newSunkCount,
           timestamp: now
         })
-
-        // Prevent Firebase listener from overwriting our optimistic updates
-        ignoreFirebaseUpdatesRef.current.player1 = true
         
         // Update Firebase (this will sync to other players and Game Master)
         const gameRef = ref(database, `rooms/${gameId}`)
@@ -256,6 +257,10 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
 
         console.log(`✅ Sinking cup ${cupToSink + 1} for player ${player}, new sunk count: ${newSunkCount}`)
 
+        // CRITICAL: Set flag FIRST to prevent Firebase listener from overwriting our updates
+        // This must happen before any state updates to catch listener callbacks that might fire
+        ignoreFirebaseUpdatesRef.current.player2 = true
+        
         // IMMEDIATELY update ALL related state (optimistic updates)
         // This ensures UI updates instantly, before Firebase sync
         setPlayer2Guesses(newGuesses)        // Update guess count
@@ -268,9 +273,6 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
           snippetNumber: newSunkCount,
           timestamp: now
         })
-
-        // Prevent Firebase listener from overwriting our optimistic updates
-        ignoreFirebaseUpdatesRef.current.player2 = true
         
         // Update Firebase (this will sync to other players and Game Master)
         const gameRef = ref(database, `rooms/${gameId}`)

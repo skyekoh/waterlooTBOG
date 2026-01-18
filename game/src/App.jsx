@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { initializeApp } from 'firebase/app'
 import { getDatabase, ref, onValue, set, push, update } from 'firebase/database'
 import GameBoard from './components/GameBoard'
@@ -36,6 +36,7 @@ function App() {
   const [selectedSongIndex, setSelectedSongIndex] = useState(null)
   const [showLeaderboard, setShowLeaderboard] = useState(false)
   const [playerInfo, setPlayerInfo] = useState({ name: '', school: '', playerNumber: null })
+  const hasJoinedRoomRef = useRef(false) // Track if we've already joined the room (to prevent repeated logs)
 
   // Generate or load player ID
   useEffect(() => {
@@ -51,39 +52,54 @@ function App() {
 
   const joinRoom = (roomIdToJoin, playerName, playerSchool, playerNumber = null) => {
     const roomRef = ref(database, `rooms/${roomIdToJoin}`)
+    hasJoinedRoomRef.current = false // Reset when joining a new room
     
     // Listen to room changes (including game state)
     onValue(roomRef, (snapshot) => {
       const data = snapshot.val()
       if (data) {
         let assignedPlayerNumber = null
+        let isNewJoin = false
         
         // First, check if this player is already in the room
         if (data.player1 === playerId) {
-          // This is player 1 rejoining
+          // This is player 1 - check if we've already logged this join
           assignedPlayerNumber = 1
-          console.log('🔄 Player 1 rejoining room:', { roomId: roomIdToJoin, playerId })
+          if (!hasJoinedRoomRef.current) {
+            console.log('🎮 Player 1 joining room:', { roomId: roomIdToJoin, playerId, playerName, playerSchool })
+            hasJoinedRoomRef.current = true
+          }
         } else if (data.player2 === playerId) {
-          // This is player 2 rejoining
+          // This is player 2 - check if we've already logged this join
           assignedPlayerNumber = 2
-          console.log('🔄 Player 2 rejoining room:', { roomId: roomIdToJoin, playerId })
+          if (!hasJoinedRoomRef.current) {
+            console.log('🎮 Player 2 joining room:', { roomId: roomIdToJoin, playerId, playerName, playerSchool })
+            hasJoinedRoomRef.current = true
+          }
         } else if (!data.player1) {
           // First player to join - becomes Player 1
           assignedPlayerNumber = 1
+          isNewJoin = true
           console.log('🎮 Player 1 joining room:', { roomId: roomIdToJoin, playerId, playerName, playerSchool })
+          hasJoinedRoomRef.current = true
           set(ref(database, `rooms/${roomIdToJoin}/player1`), playerId)
           set(ref(database, `rooms/${roomIdToJoin}/player1Info`), { name: playerName, school: playerSchool })
         } else if (!data.player2) {
           // Second player to join - becomes Player 2 (only if this player isn't already player1)
           assignedPlayerNumber = 2
+          isNewJoin = true
           console.log('🎮 Player 2 joining room:', { roomId: roomIdToJoin, playerId, playerName, playerSchool })
+          hasJoinedRoomRef.current = true
           set(ref(database, `rooms/${roomIdToJoin}/player2`), playerId)
           set(ref(database, `rooms/${roomIdToJoin}/player2Info`), { name: playerName, school: playerSchool })
         } else {
           // Room is full with different players
           if (data.player1 && data.player2 && data.player1 !== playerId && data.player2 !== playerId) {
-            console.log('❌ Room is full!', { roomId: roomIdToJoin, playerId, existingPlayer1: data.player1, existingPlayer2: data.player2 })
-            alert('This room is already full with two players!')
+            if (!hasJoinedRoomRef.current) {
+              console.log('❌ Room is full!', { roomId: roomIdToJoin, playerId, existingPlayer1: data.player1, existingPlayer2: data.player2 })
+              alert('This room is already full with two players!')
+              hasJoinedRoomRef.current = true
+            }
           }
           return
         }
@@ -117,6 +133,7 @@ function App() {
     setIsGameMaster(false)
     setSelectedSongIndex(null)
     setPlayerInfo({ name: '', school: '', playerNumber: null })
+    hasJoinedRoomRef.current = false // Reset join tracking when leaving
   }
 
   const createGameMaster = async () => {
