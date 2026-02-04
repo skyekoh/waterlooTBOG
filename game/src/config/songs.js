@@ -6,49 +6,106 @@
 // Get base URL for proper asset paths
 const BASE_URL = import.meta.env.BASE_URL || '/'
 
+const snippetTemplate = [
+  { start: 0, duration: 5 },
+  { start: 5, duration: 5 },
+  { start: 10, duration: 5 },
+  { start: 15, duration: 5 },
+  { start: 20, duration: 5 },
+  { start: 25, duration: 5 }
+]
+
 export const songs = [
   {
     id: 1,
     title: "Party Rock Anthem",
-    artist: "LMFAO, Lauren Bennett, GoonRock",
+    artist: "LMFAO",
     url: `${BASE_URL}songs/party-rock-anthem.mp3`,
-    snippets: [
-      { start: 0, duration: 5 },    // Snippet 1 (plays when 1st cup is hit): 0-5 seconds
-      { start: 5, duration: 5 },    // Snippet 2 (plays when 2nd cup is hit): 5-10 seconds
-      { start: 10, duration: 5 },   // Snippet 3 (plays when 3rd cup is hit): 10-15 seconds
-      { start: 15, duration: 5 },   // Snippet 4 (plays when 4th cup is hit): 15-20 seconds
-      { start: 20, duration: 5 },   // Snippet 5 (plays when 5th cup is hit): 20-25 seconds
-      { start: 25, duration: 5 }    // Snippet 6 (plays when 6th cup is hit): 25-30 seconds
-    ]
+    snippets: [...snippetTemplate]
   },
   {
     id: 2,
     title: "Dynamite",
     artist: "Taio Cruz",
     url: `${BASE_URL}songs/dynamite.mp3`,
-    snippets: [
-      { start: 0, duration: 5 },    // Snippet 1 (plays when 1st cup is hit): 0-5 seconds
-      { start: 5, duration: 5 },    // Snippet 2 (plays when 2nd cup is hit): 5-10 seconds
-      { start: 10, duration: 5 },   // Snippet 3 (plays when 3rd cup is hit): 10-15 seconds
-      { start: 15, duration: 5 },   // Snippet 4 (plays when 4th cup is hit): 15-20 seconds
-      { start: 20, duration: 5 },   // Snippet 5 (plays when 5th cup is hit): 20-25 seconds
-      { start: 25, duration: 5 }    // Snippet 6 (plays when 6th cup is hit): 25-30 seconds
-    ]
+    snippets: [...snippetTemplate]
+  },
+  {
+    id: 3,
+    title: "I Gotta Feeling",
+    artist: "Black Eyed Peas",
+    url: `${BASE_URL}songs/${encodeURIComponent('Black Eyed Peas - I Gotta Feeling.mp3')}`,
+    snippets: [...snippetTemplate]
+  },
+  {
+    id: 4,
+    title: "Rock That Body",
+    artist: "Black Eyed Peas",
+    url: `${BASE_URL}songs/${encodeURIComponent('Black Eyed Peas - Rock That Body.mp3')}`,
+    snippets: [...snippetTemplate]
+  },
+  {
+    id: 5,
+    title: "Like A G6",
+    artist: "Far East Movement",
+    url: `${BASE_URL}songs/${encodeURIComponent('Far East Movement, The Cataracs, DEV - Like A G6.mp3')}`,
+    snippets: [...snippetTemplate]
+  },
+  {
+    id: 6,
+    title: "My House",
+    artist: "Flo Rida",
+    url: `${BASE_URL}songs/${encodeURIComponent('Flo Rida - My House.mp3')}`,
+    snippets: [...snippetTemplate]
+  },
+  {
+    id: 7,
+    title: "Teenage Dream",
+    artist: "Katy Perry",
+    url: `${BASE_URL}songs/${encodeURIComponent('Katy Perry - Teenage Dream.mp3')}`,
+    snippets: [...snippetTemplate]
+  },
+  {
+    id: 8,
+    title: "TiK ToK",
+    artist: "Kesha",
+    url: `${BASE_URL}songs/${encodeURIComponent('Kesha - TiK ToK.mp3')}`,
+    snippets: [...snippetTemplate]
+  },
+  {
+    id: 9,
+    title: "Sexy And I Know It",
+    artist: "LMFAO",
+    url: `${BASE_URL}songs/${encodeURIComponent('LMFAO - Sexy And I Know It.mp3')}`,
+    snippets: [...snippetTemplate]
+  },
+  {
+    id: 10,
+    title: "Sorry For Party Rocking",
+    artist: "LMFAO",
+    url: `${BASE_URL}songs/${encodeURIComponent('LMFAO - Sorry For Party Rocking.mp3')}`,
+    snippets: [...snippetTemplate]
+  },
+  {
+    id: 11,
+    title: "Can't Hold Us",
+    artist: "Macklemore & Ryan Lewis",
+    url: `${BASE_URL}songs/${encodeURIComponent("Macklemore, Ryan Lewis, Macklemore & Ryan Lewis, Ray Dalton - Can't Hold Us (feat. Ray Dalton).mp3")}`,
+    snippets: [...snippetTemplate]
+  },
+  {
+    id: 12,
+    title: "Eenie Meenie",
+    artist: "Sean Kingston & Justin Bieber",
+    url: `${BASE_URL}songs/${encodeURIComponent('Sean Kingston, Justin Bieber - Eenie Meenie.mp3')}`,
+    snippets: [...snippetTemplate]
+  },
+  {
+    id: 13,
+    title: "Shut Up and Dance",
+    artist: "WALK THE MOON",
+    url: `${BASE_URL}songs/${encodeURIComponent('WALK THE MOON - Shut Up and Dance.mp3')}`,
+    snippets: [...snippetTemplate]
   }
-  // Add more songs here...
-  // {
-  //   id: 3,
-  //   title: "Your Song Title",
-  //   artist: "Artist Name",
-  //   url: "/songs/yoursong.mp3",
-  //   snippets: [
-  //     { start: 0, duration: 5 },     // Snippet 1: 0-5 seconds
-  //     { start: 5, duration: 5 },     // Snippet 2: 5-10 seconds
-  //     { start: 10, duration: 5 },    // Snippet 3: 10-15 seconds
-  //     { start: 15, duration: 5 },    // Snippet 4: 15-20 seconds
-  //     { start: 20, duration: 5 },    // Snippet 5: 20-25 seconds
-  //     { start: 25, duration: 5 }     // Snippet 6: 25-30 seconds
-  //   ]
-  // }
 ]
 
