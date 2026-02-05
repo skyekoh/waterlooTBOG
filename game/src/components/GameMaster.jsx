@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { ref, onValue } from 'firebase/database'
+import { ref, onValue, update, push } from 'firebase/database'
 import { songs } from '../config/songs'
 import Cup from './Cup'
 import './GameMaster.css'
@@ -17,6 +17,8 @@ function GameMaster({ gameId, playerId, database, onStartGame, onEndGame }) {
   const [player2Guesses, setPlayer2Guesses] = useState(0)
   const [gameStatus, setGameStatus] = useState('waiting')
   const [winner, setWinner] = useState(null)
+  const [player1Id, setPlayer1Id] = useState(null)
+  const [player2Id, setPlayer2Id] = useState(null)
   
   // Use gameId as roomId (they're the same)
   const roomId = gameId
@@ -51,6 +53,8 @@ function GameMaster({ gameId, playerId, database, onStartGame, onEndGame }) {
         setPlayer2Joined(player2Exists)
         setPlayer1Info(data.player1Info || null)
         setPlayer2Info(data.player2Info || null)
+        setPlayer1Id(data.player1 || null)
+        setPlayer2Id(data.player2 || null)
         
         // Track game statistics (cups and guesses)
         if (data.player1Cups) {
@@ -106,6 +110,61 @@ function GameMaster({ gameId, playerId, database, onStartGame, onEndGame }) {
     }
   }
 
+  const handleSinkCup = (player) => {
+    if (gameStatus !== 'playing') return
+    if (!database || !gameId) return
+
+    const cups = player === 1 ? player1Cups : player2Cups
+    const sunkCount = Array.isArray(cups) ? cups.filter(cup => cup).length : 0
+    if (sunkCount >= 6) return
+
+    const newCups = [...(Array.isArray(cups) ? cups : Array(6).fill(false))]
+    const cupToSink = newCups.findIndex(cup => !cup)
+    if (cupToSink === -1) return
+
+    newCups[cupToSink] = true
+    const newSunkCount = sunkCount + 1
+    const now = Date.now()
+
+    const playerKey = player === 1 ? 'player1' : 'player2'
+    const firebaseUpdate = {
+      [`${playerKey}Cups`]: newCups,
+      [`${playerKey}Guesses`]: newSunkCount,
+      [`${playerKey}SnippetPlayed`]: false,
+      [`${playerKey}GuessUsed`]: false,
+      lastSunkCup: {
+        player,
+        cupIndex: cupToSink,
+        snippetNumber: newSunkCount,
+        timestamp: now
+      }
+    }
+
+    if (newSunkCount === 6) {
+      firebaseUpdate.gameStatus = 'won'
+      firebaseUpdate.gameState = 'won'
+      firebaseUpdate.winner = player
+      firebaseUpdate.finishedAt = now
+    }
+
+    const gameRef = ref(database, `rooms/${gameId}`)
+    update(gameRef, firebaseUpdate).then(() => {
+      if (newSunkCount === 6) {
+        const winnerInfo = player === 1 ? player1Info : player2Info
+        const winnerId = player === 1 ? player1Id : player2Id
+        const leaderboardRef = ref(database, 'leaderboard')
+        push(leaderboardRef, {
+          playerId: winnerId || `player_${player}`,
+          playerName: winnerInfo?.name || `Player ${player}`,
+          playerSchool: winnerInfo?.school || '',
+          gameId,
+          songIndex: selectedSongIndex ?? 0,
+          guesses: 6,
+          timestamp: now
+        })
+      }
+    })
+  }
 
   const currentSong = songs[selectedSongIndex] || songs[0]
 
@@ -209,6 +268,14 @@ function GameMaster({ gameId, playerId, database, onStartGame, onEndGame }) {
                   <p>Guesses: {player1Guesses}</p>
                 </div>
               )}
+              {gameStarted && gameStatus === 'playing' && player1Cups.filter(cup => cup).length < 6 && (
+                <button
+                  onClick={() => handleSinkCup(1)}
+                  className="gm-btn gm-btn-sink gm-btn-sink-p1"
+                >
+                  Sink a Cup
+                </button>
+              )}
             </div>
 
             <div className={`player-status-card player-2-card ${gameStatus === 'won' && winner === 2 ? 'winner' : ''}`}>
@@ -227,6 +294,14 @@ function GameMaster({ gameId, playerId, database, onStartGame, onEndGame }) {
                   <p>Cups Sunk: {player2Cups.filter(cup => cup).length}/6</p>
                   <p>Guesses: {player2Guesses}</p>
                 </div>
+              )}
+              {gameStarted && gameStatus === 'playing' && player2Cups.filter(cup => cup).length < 6 && (
+                <button
+                  onClick={() => handleSinkCup(2)}
+                  className="gm-btn gm-btn-sink gm-btn-sink-p2"
+                >
+                  Sink a Cup
+                </button>
               )}
             </div>
           </div>

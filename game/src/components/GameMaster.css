@@ -200,6 +200,37 @@
   box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
 }
 
+.gm-btn-sink {
+  margin-top: 12px;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gm-btn-sink-p1 {
+  background: #2196f3;
+  color: white;
+}
+
+.gm-btn-sink-p1:hover {
+  background: #1976d2;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+}
+
+.gm-btn-sink-p2 {
+  background: #f44336;
+  color: white;
+}
+
+.gm-btn-sink-p2:hover {
+  background: #d32f2f;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
+}
+
 .gm-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;

@@ -3,7 +3,8 @@
 # NOTE: Source index.html must reference /src/main.jsx for builds to work!
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$deployPath = Join-Path $scriptDir "..\game"
+Set-Location $scriptDir
+$deployPath = $scriptDir
 $distPath = Join-Path $scriptDir "dist"
 
 Write-Host "Copying built files to deployment directory..." -ForegroundColor Cyan
@@ -11,16 +12,14 @@ Write-Host "From: $distPath" -ForegroundColor Gray
 Write-Host "To:   $deployPath" -ForegroundColor Gray
 Write-Host ""
 
-# Backup source index.html first (just in case)
+# Ensure source index.html is restored for next build (postbuild does this, but be safe)
 $sourceIndexPath = Join-Path $deployPath "index.html"
-if (Test-Path $sourceIndexPath) {
-    $backupPath = Join-Path $deployPath "index.html.source"
-    $content = Get-Content $sourceIndexPath -Raw
-    if ($content -match "/src/main.jsx") {
-        Write-Host "Source index.html detected (contains /src/main.jsx)" -ForegroundColor Green
+$backupPath = Join-Path $deployPath "index.html.source"
+if (Test-Path $backupPath) {
+    $content = Get-Content $sourceIndexPath -Raw -ErrorAction SilentlyContinue
+    if ($content -and $content -match "/src/main.jsx") {
         Copy-Item $sourceIndexPath $backupPath -Force -ErrorAction SilentlyContinue
-    } else {
-        Write-Host "WARNING: index.html doesn't look like source file!" -ForegroundColor Yellow
+        Write-Host "Backed up source index.html" -ForegroundColor Gray
     }
 }
 

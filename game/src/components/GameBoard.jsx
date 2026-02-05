@@ -485,10 +485,6 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
       guesses: guesses,
       timestamp: Date.now()
     })
-
-    setTimeout(() => {
-      onGameEnd()
-    }, 5000)
   }
 
   const checkGameFinished = () => {
@@ -523,10 +519,6 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
         guesses: player1Guesses,
         timestamp: Date.now()
       })
-      
-      setTimeout(() => {
-        onGameEnd()
-      }, 5000)
       return
     }
     
@@ -557,16 +549,20 @@ function GameBoard({ gameId, playerId, database, selectedSongIndex, isGameMaster
         guesses: player2Guesses,
         timestamp: Date.now()
       })
-      
-      setTimeout(() => {
-        onGameEnd()
-      }, 5000)
     }
   }
 
   useEffect(() => {
     checkGameFinished()
   }, [player1Cups, player2Cups, gameStatus])
+
+  // When game is won (including from Game Master manual sink via Firebase), transition after 5s
+  useEffect(() => {
+    if (gameStatus === 'won' && winner && onGameEnd) {
+      const t = setTimeout(() => onGameEnd(), 5000)
+      return () => clearTimeout(t)
+    }
+  }, [gameStatus, winner, onGameEnd])
 
   const currentSong = songs[currentSongIndex] || (songs.length > 0 ? songs[0] : null)
   const myCups = isPlayer1.current ? player1Cups : player2Cups
