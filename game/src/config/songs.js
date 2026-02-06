@@ -7,12 +7,12 @@
 const BASE_URL = import.meta.env.BASE_URL || '/'
 
 const snippetTemplate = [
-  { start: 0, duration: 5 },
-  { start: 5, duration: 5 },
-  { start: 10, duration: 5 },
-  { start: 15, duration: 5 },
-  { start: 20, duration: 5 },
-  { start: 25, duration: 5 }
+  { start: 0, duration: 2 },
+  { start: 2, duration: 2 },
+  { start: 4, duration: 2 },
+  { start: 6, duration: 2 },
+  { start: 8, duration: 2 },
+  { start: 10, duration: 2 }
 ]
 
 export const songs = [
