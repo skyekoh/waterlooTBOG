@@ -379,6 +379,23 @@ style.textContent = `
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
     
+    .nav-center {
+        display: flex !important;
+        align-items: center !important;
+        gap: 40px;
+    }
+    .nav-dropdown,
+    .nav-item {
+        display: flex !important;
+        align-items: center !important;
+        line-height: 1 !important;
+    }
+    .nav-center .nav-link {
+        display: inline-flex !important;
+        align-items: center !important;
+        line-height: 1 !important;
+        white-space: nowrap !important;
+    }
     .main-header.scrolled .nav-link,
     .main-header.scrolled .nav-brand {
         color: var(--waterloo-black);
